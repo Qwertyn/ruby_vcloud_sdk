@@ -8,6 +8,18 @@ module VCloudSdk
 
     private
 
+    def vdcs
+      @session.org.vdcs.map do |vdc_link|
+        VCloudSdk::VDC.new(@session, vdc_link)
+      end
+    end
+
+    def list_vdcs
+      @session.org.vdcs.map do |vdc_link|
+        vdc_link.name
+      end
+    end
+
     def find_vdc_by_name(name)
       vdc_link = @session.org.vdc_link(name)
       fail ObjectNotFoundError, "VDC #{name} not found" unless vdc_link
