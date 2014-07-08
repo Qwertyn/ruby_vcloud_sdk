@@ -36,11 +36,15 @@ module VCloudSdk
         @time_limit[:http_request])
       @session_xml_obj = @connection.connect(username, password)
       @org_link = @session_xml_obj.organization
+      @query_list_link = @session_xml_obj.query_list
     end
 
     def org
       @connection.get(@org_link)
     end
 
+    def query_list
+      @connection.get(@query_list_link)
+    end
   end
 end
