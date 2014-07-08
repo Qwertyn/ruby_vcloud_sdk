@@ -8,6 +8,24 @@ module VCloudSdk
 
     private
 
+    def vapps
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.map do |vapp_link|
+        VCloudSdk::VApp.new(@session, vapp_link)
+      end
+    end
+
+    def list_vapps
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.map do |vapp_link|
+        vapp_link.name
+      end
+    end
+
     def vdcs
       @session.org.vdcs.map do |vdc_link|
         VCloudSdk::VDC.new(@session, vdc_link)

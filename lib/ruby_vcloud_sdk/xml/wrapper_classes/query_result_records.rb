@@ -13,6 +13,10 @@ module VCloudSdk
       def right_records
         get_nodes("RightRecord")
       end
+
+      def vapps
+        get_nodes(XML_TYPE[:VAPPRECORD])
+      end
     end
   end
 end
