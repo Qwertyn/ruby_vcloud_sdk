@@ -26,6 +26,15 @@ module VCloudSdk
       end
     end
 
+    def find_vapp_by_name(name)
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      vapp_link = query_list.vapp_link(name)
+      fail ObjectNotFoundError, "Vapp #{name} not found" unless vapp_link
+      VCloudSdk::VApp.new(@session, vapp_link)
+    end
+
     def vdcs
       @session.org.vdcs.map do |vdc_link|
         VCloudSdk::VDC.new(@session, vdc_link)

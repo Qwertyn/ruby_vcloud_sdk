@@ -19,5 +19,9 @@ module VCloudSdk
     def vapps
       entity_xml.vapps
     end
+
+    def vapp_link(name)
+      entity_xml.vapp_link(name)
+    end
   end
 end

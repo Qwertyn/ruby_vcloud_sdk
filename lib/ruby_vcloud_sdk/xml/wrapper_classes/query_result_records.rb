@@ -17,6 +17,10 @@ module VCloudSdk
       def vapps
         get_nodes(XML_TYPE[:VAPPRECORD])
       end
+
+      def vapp_link(name)
+        get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first
+      end
     end
   end
 end

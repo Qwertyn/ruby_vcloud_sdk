@@ -14,7 +14,7 @@ module VCloudSdk
 
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
-           :vdc_exists?, :vapps, :list_vapps
+           :vdc_exists?, :vapps, :list_vapps, :find_vapp_by_name
 
     def initialize(url, username, password, options = {}, logger = nil)
       @url = url
