@@ -35,6 +35,15 @@ module VCloudSdk
       VCloudSdk::VApp.new(@session, vapp_link)
     end
 
+    def vapp_exists?(name)
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.any? do |vapp|
+        vapp.name == name
+      end
+    end
+
     def vdcs
       @session.org.vdcs.map do |vdc_link|
         VCloudSdk::VDC.new(@session, vdc_link)
