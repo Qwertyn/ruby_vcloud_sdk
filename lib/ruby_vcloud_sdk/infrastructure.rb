@@ -17,12 +17,13 @@ module VCloudSdk
       end
     end
 
+    # TODO: get it work for admin accounts
     def list_vapps
       vapps_link = @session.query_list.vapps_query_list
       query_list = VCloudSdk::QueryList.new(@session, vapps_link)
 
       query_list.vapps.map do |vapp_link|
-        vapp_link.name
+        VCloudSdk::VApp.new(@session, vapp_link).to_hash
       end
     end
 

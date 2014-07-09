@@ -145,6 +145,18 @@ module VCloudSdk
       self
     end
 
+    def to_hash
+      { :href_id               => @link.href_id,
+        :name                  => @link.name,
+        :status                => @link.status,
+        :owner_name            => @link.owner_name,
+        :number_of_vms         => @link.number_of_vms,
+        :cpu_allocation_mhz    => @link.cpu_allocation_mhz,
+        :cpu_allocation_in_mhz => @link.cpu_allocation_in_mhz,
+        :number_of_cpus        => @link.number_of_cpus,
+        :memory_allocation_mb  => @link.memory_allocation_mb }
+    end
+
     private
 
     def recompose_from_vapp_template_param(template)

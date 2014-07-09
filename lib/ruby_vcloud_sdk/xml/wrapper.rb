@@ -111,6 +111,34 @@ module VCloudSdk
         @root["name"] = name
       end
 
+      def status
+        @root["status"]
+      end
+
+      def owner_name
+        @root["ownerName"]
+      end
+
+      def number_of_vms
+        @root["numberOfVMs"]
+      end
+
+      def cpu_allocation_mhz
+        @root["cpuAllocationMhz"]
+      end
+
+      def cpu_allocation_in_mhz
+        @root["cpuAllocationInMhz"]
+      end
+
+      def number_of_cpus
+        @root["numberOfCpus"]
+      end
+
+      def memory_allocation_mb
+        @root["memoryAllocationMB"]
+      end
+
       def urn
         @root["id"]
       end
