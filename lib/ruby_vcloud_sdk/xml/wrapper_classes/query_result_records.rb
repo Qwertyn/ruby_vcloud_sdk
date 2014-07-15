@@ -15,11 +15,12 @@ module VCloudSdk
       end
 
       def vapps
-        get_nodes(XML_TYPE[:VAPPRECORD])
+        vapps = get_nodes(XML_TYPE[:VAPPRECORD])
+        vapps.empty? ? get_nodes(XML_TYPE[:ADMINVAPPRECORD]) : vapps
       end
 
       def vapp_link(name)
-        get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first
+        get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first || get_nodes(XML_TYPE[:ADMINVAPPRECORD], { name: name }, true).first
       end
     end
   end

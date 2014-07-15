@@ -1,4 +1,5 @@
 require_relative "query_list"
+require_relative "organization"
 require_relative "vdc"
 require_relative "catalog"
 require_relative "session"
@@ -15,7 +16,7 @@ module VCloudSdk
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
            :vdc_exists?, :vapps, :list_vapps, :find_vapp_by_name,
-           :vapp_exists?
+           :vapp_exists?, :organizations
 
     def initialize(url, username, password, options = {}, logger = nil)
       @url = url

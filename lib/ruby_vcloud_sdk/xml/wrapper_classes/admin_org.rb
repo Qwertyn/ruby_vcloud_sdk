@@ -9,6 +9,10 @@ module VCloudSdk
       def catalog(name)
         get_nodes("CatalogReference", {"name"=>name}).first
       end
+
+      def users
+        get_nodes("UserReference")
+      end
     end
 
   end

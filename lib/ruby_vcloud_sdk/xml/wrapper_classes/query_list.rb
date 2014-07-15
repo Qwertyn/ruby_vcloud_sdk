@@ -4,7 +4,9 @@ module VCloudSdk
       def vapps_query_list
         get_nodes(XML_TYPE[:LINK],
                   { type: MEDIA_TYPE[:RECORDS],
-                    name: 'vApp' }).first
+                    name: 'vApp' }).first || get_nodes(XML_TYPE[:LINK],
+                                                       { type: MEDIA_TYPE[:RECORDS],
+                                                         name: 'adminVApp' }).first
       end
     end
   end

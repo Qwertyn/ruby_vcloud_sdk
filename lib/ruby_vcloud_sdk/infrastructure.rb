@@ -8,6 +8,12 @@ module VCloudSdk
 
     private
 
+    def organizations
+      @session.vcloud.organizations.map do |org_link|
+        VCloudSdk::Organization.new(@session, org_link)
+      end
+    end
+
     def vapps
       vapps_link = @session.query_list.vapps_query_list
       query_list = VCloudSdk::QueryList.new(@session, vapps_link)

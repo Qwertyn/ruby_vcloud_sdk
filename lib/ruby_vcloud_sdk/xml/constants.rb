@@ -87,6 +87,7 @@ module VCloudSdk
         :ORGANIZATION => "application/vnd.vmware.vcloud.org+xml",
         :ORGANIZATION_LIST => "application/vnd.vmware.vcloud.orgList+xml",
         :VDC => "application/vnd.vmware.vcloud.vdc+xml",
+        :VCLOUD => "application/vnd.vmware.admin.vcloud+xml",
         :UPLOAD_VAPP_TEMPLATE_PARAMS =>
           "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml",
         :INSTANTIATE_OVF_PARAMS =>

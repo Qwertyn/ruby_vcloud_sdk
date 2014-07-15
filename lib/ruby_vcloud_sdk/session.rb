@@ -37,6 +37,7 @@ module VCloudSdk
       @session_xml_obj = @connection.connect(username, password)
       @org_link = @session_xml_obj.organization
       @query_list_link = @session_xml_obj.query_list
+      @vcloud_link = @session_xml_obj.vcloud
     end
 
     def org
@@ -45,6 +46,10 @@ module VCloudSdk
 
     def query_list
       @connection.get(@query_list_link)
+    end
+
+    def vcloud
+      @connection.get(@vcloud_link)
     end
   end
 end
