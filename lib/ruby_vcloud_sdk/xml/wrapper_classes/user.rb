@@ -5,7 +5,7 @@ module VCloudSdk
         get_nodes('EmailAddress').first.content
       end
 
-      def role
+      def role_name
         get_nodes('Role').first.name
       end
 
