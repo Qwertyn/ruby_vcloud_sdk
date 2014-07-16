@@ -103,6 +103,14 @@ module VCloudSdk
         URI.parse(href).path.split('/')[-1]
       end
 
+      def org
+        @root["org"]
+      end
+
+      def org_id
+        URI.parse(org).path.split('/')[-1]
+      end
+
       def name
         @root["name"]
       end

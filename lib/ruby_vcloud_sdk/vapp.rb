@@ -147,6 +147,7 @@ module VCloudSdk
 
     def to_hash
       { :href_id               => @link.href_id,
+        :org_id                => @link.org_id,
         :name                  => @link.name,
         :status                => @link.status,
         :owner_name            => @link.owner_name,
