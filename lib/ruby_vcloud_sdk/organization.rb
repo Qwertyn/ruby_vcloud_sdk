@@ -23,6 +23,12 @@ module VCloudSdk
       end
     end
 
+
+    def to_hash
+      { :identifier => id,
+        :label      => @link.name }
+    end
+
     private
 
     def admin_xml
