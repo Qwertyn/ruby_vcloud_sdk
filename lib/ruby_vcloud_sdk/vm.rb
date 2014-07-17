@@ -17,6 +17,11 @@ module VCloudSdk
       @link = link
     end
 
+    def to_hash
+      { memory: memory,
+        cpus: vcpu }
+    end
+
     def href
       @link
     end
