@@ -18,8 +18,9 @@ module VCloudSdk
     end
 
     def to_hash
-      { memory: memory,
-        cpus: vcpu }
+      { name: name,
+        memory: memory,
+        vcpu: vcpu }
     end
 
     def href
