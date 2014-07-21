@@ -11,6 +11,7 @@ module VCloudSdk
 
     extend Forwardable
     def_delegator :entity_xml, :name
+    def_delegator :entity_xml, :href_id
 
     def initialize(session, link)
       @session = session
@@ -18,9 +19,10 @@ module VCloudSdk
     end
 
     def to_hash
-      { name: name,
-        memory: memory,
-        vcpu: vcpu }
+      { href_id: href_id,
+        name:    name,
+        memory:  memory,
+        vcpu:    vcpu }
     end
 
     def href
