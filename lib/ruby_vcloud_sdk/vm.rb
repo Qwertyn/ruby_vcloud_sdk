@@ -12,6 +12,7 @@ module VCloudSdk
     extend Forwardable
     def_delegator :entity_xml, :name
     def_delegator :entity_xml, :href_id
+    def_delegator :entity_xml, :network_connection_section
 
     def initialize(session, link)
       @session = session
@@ -19,10 +20,15 @@ module VCloudSdk
     end
 
     def to_hash
+      nc = network_connection_section.network_connection(
+        network_connection_section.primary_network_connection_index
+      )
+
       { href_id: href_id,
-        name:    name,
-        memory:  memory,
-        vcpu:    vcpu }
+        name: name,
+        memory: memory,
+        vcpu: vcpu,
+        primary_network_connection_ip_address: nc.ip_address }
     end
 
     def href
