@@ -212,9 +212,14 @@ module VCloudSdk
     private
 
     def storage_profile_records
-      connection
+      records = connection
         .get("/api/query?type=orgVdcStorageProfile&filter=vdcName==#{URI.encode(name)}")
         .org_vdc_storage_profile_records
+      records = connection
+          .get("/api/query?type=adminOrgVdcStorageProfile&filter=vdcName==#{URI.encode(name)}")
+          .org_vdc_storage_profile_records if records.empty?
+
+      records
     end
 
     def disk_create_params(name, capacity, bus_type, bus_sub_type, vm)

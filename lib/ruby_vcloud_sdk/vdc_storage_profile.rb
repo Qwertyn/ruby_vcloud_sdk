@@ -11,6 +11,14 @@ module VCloudSdk
       @vdc_name = @storage_profile_xml_obj[:vdcName]
     end
 
+    def href
+      @storage_profile_xml_obj[:href]
+    end
+
+    def href_id
+      URI.parse(@href).path.split('/')[-1]
+    end
+
     # Return storageLimitMB - storageUsedMB
     # Return -1 if 'storageLimitMB' is 0
     def available_storage

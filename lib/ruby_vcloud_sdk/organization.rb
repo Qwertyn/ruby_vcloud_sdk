@@ -23,6 +23,12 @@ module VCloudSdk
       end
     end
 
+    def vdcs
+      admin_xml.vdcs.map do |vdc_link|
+        VCloudSdk::VDC.new(@session, vdc_link)
+      end
+    end
+
 
     def to_hash
       { :identifier => id,

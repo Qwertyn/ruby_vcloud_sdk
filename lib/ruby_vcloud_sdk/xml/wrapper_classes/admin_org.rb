@@ -13,6 +13,10 @@ module VCloudSdk
       def users
         get_nodes("UserReference")
       end
+
+      def vdcs
+        get_nodes("Vdc")
+      end
     end
 
   end
