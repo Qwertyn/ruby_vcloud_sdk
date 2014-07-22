@@ -88,6 +88,11 @@ module VCloudSdk
                   type: MEDIA_TYPE[:NETWORK_CONNECTION_SECTION]).first
       end
 
+      def guest_customization_section
+        get_nodes("GuestCustomizationSection",
+                  type: MEDIA_TYPE[:GUEST_CUSTOMIZATION_SECTION]).first
+      end
+
       def product_section
         get_nodes("ProductSection", nil, true, OVF).first
       end

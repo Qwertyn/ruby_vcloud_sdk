@@ -13,6 +13,7 @@ module VCloudSdk
     def_delegator :entity_xml, :name
     def_delegator :entity_xml, :href_id
     def_delegator :entity_xml, :network_connection_section
+    def_delegator :entity_xml, :guest_customization_section
 
     def initialize(session, link)
       @session = session
@@ -28,7 +29,8 @@ module VCloudSdk
         name: name,
         memory: memory,
         vcpu: vcpu,
-        primary_network_connection_ip_address: nc.ip_address }
+        primary_network_connection_ip_address: nc.ip_address,
+        computer_name: guest_customization_section.computer_name }
     end
 
     def href
