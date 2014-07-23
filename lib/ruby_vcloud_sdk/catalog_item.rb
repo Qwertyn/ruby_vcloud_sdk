@@ -11,6 +11,15 @@ module VCloudSdk
       @link = link
     end
 
+    def to_hash
+      { name: name,
+        href_id: href_id }
+    end
+
+    def href_id
+      @link.href_id
+    end
+
     def name
       entity_xml.entity[:name]
     end
