@@ -17,7 +17,10 @@ module VCloudSdk
       def vdcs
         get_nodes("Vdc")
       end
-    end
 
+      def catalogs
+        get_nodes("CatalogReference")
+      end
+    end
   end
 end

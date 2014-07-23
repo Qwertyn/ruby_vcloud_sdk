@@ -29,6 +29,11 @@ module VCloudSdk
       end
     end
 
+    def catalogs
+      admin_xml.catalogs.map do |catalog_link|
+        VCloudSdk::Catalog.new(@session, catalog_link)
+      end
+    end
 
     def to_hash
       { :identifier => id,

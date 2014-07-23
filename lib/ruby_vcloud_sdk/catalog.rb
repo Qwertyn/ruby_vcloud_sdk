@@ -12,6 +12,11 @@ module VCloudSdk
       @link = link
     end
 
+    def to_hash
+      { id: id,
+        name: name }
+    end
+
     def name
       admin_xml.name
     end
