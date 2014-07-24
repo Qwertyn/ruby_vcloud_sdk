@@ -27,6 +27,7 @@ module VCloudSdk
 
       { href_id: href_id,
         name: name,
+        status: status,
         memory: memory,
         vcpu: vcpu,
         primary_network_connection_ip_address: nc.ip_address,
