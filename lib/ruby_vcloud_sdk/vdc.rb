@@ -26,6 +26,11 @@ module VCloudSdk
       @link = link
     end
 
+    def to_hash
+      { href_id: @link.href_id,
+        name: name }
+    end
+
     def storage_profiles
       storage_profile_records.map do |storage_profile|
         VCloudSdk::VdcStorageProfile.new(storage_profile)
