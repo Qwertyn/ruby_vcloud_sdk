@@ -11,6 +11,11 @@ module VCloudSdk
       @vdc_name = @storage_profile_xml_obj[:vdcName]
     end
 
+    def to_hash
+      { href_id: @storage_profile_xml_obj.href_id,
+        name: name }
+    end
+
     def href
       @storage_profile_xml_obj[:href]
     end
