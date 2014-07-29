@@ -142,10 +142,10 @@ module VCloudSdk
     end
 
     def instantiate_vapp_template(template_name, vdc_name, vapp_name,
-        description = nil, disk_locality = nil, network_config = nil)
+        description = nil, disk_locality = nil, network_config = nil, storage_profile = nil)
 
       instantiate_vapp_params = create_instantiate_vapp_params(
-          template_name, vapp_name, description, disk_locality, network_config)
+          template_name, vapp_name, description, disk_locality, network_config, storage_profile)
 
       vdc = find_vdc_by_name vdc_name
 
@@ -335,7 +335,7 @@ module VCloudSdk
     end
 
     def create_instantiate_vapp_params(template_name,
-        vapp_name, description, disk_locality, network_config)
+        vapp_name, description, disk_locality, network_config, storage_profile)
 
       source_vapp_template = retrieve_vapp_template_xml_node(template_name)
 
@@ -350,22 +350,31 @@ module VCloudSdk
       instantiate_vapp_params.all_eulas_accepted = true
       instantiate_vapp_params.linked_clone = false
       instantiate_vapp_params.set_locality = locality_spec(
-          source_vapp_template, disk_locality)
+          source_vapp_template, disk_locality, storage_profile)
 
       instantiate_vapp_params
     end
 
-    def locality_spec(vapp_template, disk_locality)
-      disk_locality ||= []
+    def locality_spec(vapp_template, disk_locality, storage_profile_link)
       locality = {}
-      disk_locality.each do |disk|
-        current_disk = connection.get(disk)
-        unless current_disk
-          Config.logger.info "Disk #{disk.name} no longer exists."
-          next
-        end
+
+      disk = if disk_locality
+               current_disk = connection.get(disk_locality)
+               Config.logger.info "Disk #{disk.name} no longer exists." unless current_disk
+               current_disk
+             end
+
+      storage_profile = if storage_profile_link
+               current_storage_profile = connection.get(storage_profile_link)
+               Config.logger.info "StorageProfile #{storage_profile_link.name} no longer exists." unless current_storage_profile
+               current_storage_profile
+             end
+
+      params = [disk, storage_profile].compact
+
+      unless params.empty?
         vapp_template.vms.each do |vm|
-          locality[vm] = current_disk
+          locality[vm] = params
         end
       end
       locality

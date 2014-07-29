@@ -21,7 +21,7 @@ module VCloudSdk
     end
 
     def href_id
-      URI.parse(@href).path.split('/')[-1]
+      URI.parse(href).path.split('/')[-1]
     end
 
     # Return storageLimitMB - storageUsedMB

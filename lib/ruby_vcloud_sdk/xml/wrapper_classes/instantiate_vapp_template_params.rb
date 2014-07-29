@@ -42,6 +42,9 @@ module VCloudSdk
         @local_exists = true
 
         locality.each do |k,v|
+          disk = v[0]
+          storage_profile = v[1]
+
           node_sp = create_child("SourcedVmInstantiationParams",
                                  namespace.prefix,
                                  namespace.href)
@@ -55,25 +58,30 @@ module VCloudSdk
           node_sv["name"] = k.name
           node_sv["href"] = k.href
 
-          # node_lp = create_child("LocalityParams",
-          #                        namespace.prefix,
-          #                        namespace.href)
+          if storage_profile
+            node_st = create_child("StorageProfile",
+                                   namespace.prefix,
+                                   namespace.href)
+            node_st["type"] = storage_profile.type
+            node_st["name"] = storage_profile.name
+            node_st["href"] = storage_profile.href
+            node_sv.after(node_st)
+          end
 
-          node_lp = create_child("StorageProfile",
-                                 namespace.prefix,
-                                 namespace.href)
-          node_lp["type"] = v.type
-          node_lp["name"] = v.name
-          node_lp["href"] = v.href
-          node_sv.after(node_lp)
+          if disk
+            node_lp = create_child("LocalityParams",
+                                   namespace.prefix,
+                                   namespace.href)
+            node_sv.after(node_st)
 
-          # node_re = add_child("ResourceEntity",
-          #                     namespace.prefix,
-          #                     namespace.href,
-          #                     node_lp)
-          # node_re["type"] = v.type
-          # node_re["name"] = v.name
-          # node_re["href"] = v.href
+            node_re = add_child("ResourceEntity",
+                                namespace.prefix,
+                                namespace.href,
+                                node_lp)
+            node_re["type"] = disk.type
+            node_re["name"] = disk.name
+            node_re["href"] = disk.href
+          end
         end
       end
 
