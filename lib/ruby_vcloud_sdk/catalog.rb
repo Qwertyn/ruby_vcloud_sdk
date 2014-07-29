@@ -370,9 +370,9 @@ module VCloudSdk
                current_storage_profile
              end
 
-      params = [disk, storage_profile].compact
+      params = [disk, storage_profile]
 
-      unless params.empty?
+      unless params.compact.empty?
         vapp_template.vms.each do |vm|
           locality[vm] = params
         end

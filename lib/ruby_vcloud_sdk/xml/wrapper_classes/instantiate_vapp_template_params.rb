@@ -72,7 +72,7 @@ module VCloudSdk
             node_lp = create_child("LocalityParams",
                                    namespace.prefix,
                                    namespace.href)
-            node_sv.after(node_st)
+            node_st ? node_st.after(node_lp) : node_sv.after(node_lp)
 
             node_re = add_child("ResourceEntity",
                                 namespace.prefix,
