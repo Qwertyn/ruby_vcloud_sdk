@@ -55,18 +55,25 @@ module VCloudSdk
           node_sv["name"] = k.name
           node_sv["href"] = k.href
 
-          node_lp = create_child("LocalityParams",
+          # node_lp = create_child("LocalityParams",
+          #                        namespace.prefix,
+          #                        namespace.href)
+
+          node_lp = create_child("StorageProfile",
                                  namespace.prefix,
                                  namespace.href)
+          node_lp["type"] = v.type
+          node_lp["name"] = v.name
+          node_lp["href"] = v.href
           node_sv.after(node_lp)
 
-          node_re = add_child("ResourceEntity",
-                              namespace.prefix,
-                              namespace.href,
-                              node_lp)
-          node_re["type"] = v.type
-          node_re["name"] = v.name
-          node_re["href"] = v.href
+          # node_re = add_child("ResourceEntity",
+          #                     namespace.prefix,
+          #                     namespace.href,
+          #                     node_lp)
+          # node_re["type"] = v.type
+          # node_re["name"] = v.name
+          # node_re["href"] = v.href
         end
       end
 
