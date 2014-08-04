@@ -38,6 +38,10 @@ module VCloudSdk
       @link
     end
 
+    def storage_profile
+      VCloudSdk::VdcStorageProfile.new(entity_xml.storage_profile)
+    end
+
     # returns size of memory in megabytes
     def memory
       m = entity_xml

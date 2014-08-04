@@ -13,6 +13,11 @@ module VCloudSdk
                   .first
       end
 
+      def storage_profile
+        get_nodes(XML_TYPE[:STORAGE_PROFILE],
+                  { type: MEDIA_TYPE[:VDC_STORAGE_PROFILE] }).first
+      end
+
       def product_sections_link
         get_nodes(XML_TYPE[:LINK],
                   { type: MEDIA_TYPE[:PRODUCT_SECTIONS] },

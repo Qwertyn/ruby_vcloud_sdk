@@ -267,6 +267,7 @@ module VCloudSdk
       :CLONEVAPPTEMPLATEPARAMS => "CloneVAppTemplateParams",
       :COMPOSEVAPPPARAMS => "ComposeVAppParams",
       :CONTROLACCESSPARAMS => "ControlAccessParams",
+      :STORAGE_PROFILE => "StorageProfile",
       :CUSTOMIZATIONSECTION => "CustomizationSection",
       :DATASTOREPROVIDERVDCRELATIONRECORD =>
         "DatastoreProviderVdcRelationRecord",
