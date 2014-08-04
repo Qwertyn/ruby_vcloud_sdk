@@ -13,6 +13,7 @@ module VCloudSdk
 
     def to_hash
       { href_id: @storage_profile_xml_obj.href_id,
+        href: @storage_profile_xml_obj.href,
         name: name }
     end
 
