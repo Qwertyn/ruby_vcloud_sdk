@@ -108,6 +108,7 @@ module VCloudSdk
       end
 
       def org_id
+        return unless org
         URI.parse(org).path.split('/')[-1]
       end
 
