@@ -1,6 +1,7 @@
 module VCloudSdk
   module Xml
     VCLOUD_NAMESPACE = "http://www.vmware.com/vcloud/v1.5"
+    VMEXT_NAMESPACE = 'http://www.vmware.com/vcloud/extension/v1.5'
 
     OVF = "http://schemas.dmtf.org/ovf/envelope/1"
 

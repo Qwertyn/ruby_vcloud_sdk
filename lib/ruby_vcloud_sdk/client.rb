@@ -50,6 +50,10 @@ module VCloudSdk
         VCloudSdk::RightRecord.new(right_record)
       end
     end
+
+    def general_settings
+      settings = connection.get('/api/admin/extension/settings/general')
+    end
   end
 
 end
