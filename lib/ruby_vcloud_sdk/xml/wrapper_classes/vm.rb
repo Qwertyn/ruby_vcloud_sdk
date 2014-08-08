@@ -39,6 +39,12 @@ module VCloudSdk
                   true).first
       end
 
+      def acquire_ticket_link
+        get_nodes(XML_TYPE[:LINK],
+                  { rel: "screen:acquireTicket" },
+                  true).first
+      end
+
       def description
         nodes = get_nodes("Description")
         return nodes unless nodes
