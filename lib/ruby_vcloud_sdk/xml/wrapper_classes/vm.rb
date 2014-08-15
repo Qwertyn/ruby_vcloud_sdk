@@ -41,6 +41,12 @@ module VCloudSdk
 
       def acquire_ticket_link
         get_nodes(XML_TYPE[:LINK],
+                  { rel: "screen:acquireMksTicket" },
+                  true).first
+      end
+
+      def acquire_mks_ticket_link
+        get_nodes(XML_TYPE[:LINK],
                   { rel: "screen:acquireTicket" },
                   true).first
       end

@@ -193,6 +193,15 @@ module VCloudSdk
       URI.unescape(ticket.content)
     end
 
+    def acquire_mks_ticket
+      link = entity_xml.acquire_mks_ticket_link
+
+      return unless link
+
+      ticket = connection.post(link, nil)
+      ticket.content
+    end
+
     def insert_media(catalog_name, media_file_name)
       catalog = find_catalog_by_name(catalog_name)
       media = catalog.find_item(media_file_name, Xml::MEDIA_TYPE[:MEDIA])
