@@ -198,8 +198,7 @@ module VCloudSdk
 
       return unless link
 
-      ticket = connection.post(link, nil)
-      ticket.content
+      connection.post(link, nil)
     end
 
     def insert_media(catalog_name, media_file_name)

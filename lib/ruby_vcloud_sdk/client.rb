@@ -11,7 +11,7 @@ module VCloudSdk
   class Client
     include Infrastructure
 
-    VCLOUD_VERSION_NUMBER = "5.1"
+    VCLOUD_VERSION_NUMBER = "5.5"
 
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
