@@ -6,11 +6,15 @@ module VCloudSdk
     include Infrastructure
     extend Forwardable
 
-    def_delegator :entity_xml, :right_records
-
     def initialize(session, link)
       @session = session
       @link = link
+    end
+
+    def right_records
+      entity_xml.right_records.map do |right_record_link|
+        VCloudSdk::RightRecord.new(@session, right_record_link)
+      end
     end
 
     def name

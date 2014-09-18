@@ -48,7 +48,7 @@ module VCloudSdk
       right_records = connection.get("/api/admin/rights/query").right_records
 
       right_records.map do |right_record|
-        VCloudSdk::RightRecord.new(right_record)
+        VCloudSdk::RightRecord.new(@session, right_record)
       end
     end
 
