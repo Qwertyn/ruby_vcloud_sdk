@@ -25,6 +25,7 @@ module VCloudSdk
         request_timeout = 60 unless request_timeout
         @site = site || rest_client::Resource.new(
                           url,
+                          params: { pageSize: 125 },
                           timeout: request_timeout)
         @file_uploader = file_uploader || FileUploader
       end
