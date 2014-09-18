@@ -16,5 +16,13 @@ module VCloudSdk
     def name
       @link.name
     end
+
+    def href_id
+      @link.href_id
+    end
+
+    def to_hash
+      {name: name, href_id: href_id }
+    end
   end
 end
