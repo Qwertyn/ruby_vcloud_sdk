@@ -5,8 +5,8 @@ module VCloudSdk
         get_nodes('EmailAddress').first.content
       end
 
-      def role_name
-        get_nodes('Role').first.name
+      def role
+        VCloudSdk::Role.new(@session, get_nodes('Role').first)
       end
 
       def to_hash
