@@ -23,6 +23,15 @@ module VCloudSdk
       end
     end
 
+    def roles
+      roles_link = @session.query_list.roles_query_list
+      query_list = VCloudSdk::QueryList.new(@session, roles_link)
+
+      query_list.roles.map do |role_link|
+        VCloudSdk::Role.new(@session, role_link)
+      end
+    end
+
     # TODO: get it work for admin accounts
     def list_vapps
       vapps_link = @session.query_list.vapps_query_list

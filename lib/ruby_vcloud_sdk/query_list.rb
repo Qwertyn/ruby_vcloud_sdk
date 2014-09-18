@@ -20,6 +20,10 @@ module VCloudSdk
       entity_xml.vapps
     end
 
+    def roles
+      entity_xml.roles
+    end
+
     def vapp_link(name)
       entity_xml.vapp_link(name)
     end

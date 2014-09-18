@@ -20,6 +20,10 @@ module VCloudSdk
         vapps.empty? ? get_nodes(XML_TYPE[:ADMINVAPPRECORD]) : vapps
       end
 
+      def roles
+        get_nodes(XML_TYPE[:ROLERECORD])
+      end
+
       def vapp_link(name)
         get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first || get_nodes(XML_TYPE[:ADMINVAPPRECORD], { name: name }, true).first
       end
