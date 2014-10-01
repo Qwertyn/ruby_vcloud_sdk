@@ -32,6 +32,10 @@ module VCloudSdk
       end
     end
 
+    def entity(id)
+      @session.entity_resolver(id).link
+    end
+
     # TODO: get it work for admin accounts
     def list_vapps
       vapps_link = @session.query_list.vapps_query_list

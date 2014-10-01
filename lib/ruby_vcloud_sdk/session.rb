@@ -37,6 +37,7 @@ module VCloudSdk
       @session_xml_obj = @connection.connect(username, password)
       @org_link = @session_xml_obj.organization
       @query_list_link = @session_xml_obj.query_list
+      @entity_resolver_link = @session_xml_obj.entity_resolver
       @vcloud_link = @session_xml_obj.vcloud
     end
 
@@ -46,6 +47,13 @@ module VCloudSdk
 
     def query_list
       @connection.get(@query_list_link)
+    end
+
+    def entity_resolver(id)
+      href = @entity_resolver_link.attribute('href').value
+      result = @connection.get(@entity_resolver_link.attribute('href').value += id)
+      @entity_resolver_link.attribute('href').value = href
+      result
     end
 
     def vcloud
