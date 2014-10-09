@@ -1,7 +1,7 @@
 module VCloudSdk
 
   class VdcStorageProfile
-    attr_reader :name
+    attr_reader :name, :storage_used_mb, :storage_limit_mb
 
     def initialize(storage_profile_xml_obj)
       @storage_profile_xml_obj = storage_profile_xml_obj
@@ -14,7 +14,10 @@ module VCloudSdk
     def to_hash
       { href_id: @storage_profile_xml_obj.href_id,
         href: @storage_profile_xml_obj.href,
-        name: name }
+        name: name,
+        storage_used_mb: @storage_used_mb,
+        storage_limit_mb: @storage_limit_mb
+      }
     end
 
     def href
