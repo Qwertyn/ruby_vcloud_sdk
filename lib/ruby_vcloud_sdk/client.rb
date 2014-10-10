@@ -12,7 +12,7 @@ module VCloudSdk
   class Client
     include Infrastructure
 
-    VCLOUD_VERSION_NUMBER = "5.5"
+    VCLOUD_VERSION_NUMBER = "5.6"
 
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
@@ -54,6 +54,25 @@ module VCloudSdk
 
     def general_settings
       settings = connection.get('/api/admin/extension/settings/general')
+    end
+
+    def vm_stats(id, start_time, end_time)
+      stats = Xml::WrapperFactory.create_instance("HistoricUsageSpec")
+
+      stats.add_child("AbsoluteStartTime")
+      stats.get_nodes("AbsoluteStartTime")[0][:time] = start_time
+
+      stats.add_child("AbsoluteEndTime")
+      stats.get_nodes("AbsoluteEndTime")[0][:time] = end_time
+
+      stats.add_child("MetricPattern")
+      stats.get_nodes("MetricPattern").last.content = "cpu.*"
+      stats.add_child("MetricPattern")
+      stats.get_nodes("MetricPattern").last.content = "disk.*"
+      stats.add_child("MetricPattern")
+      stats.get_nodes("MetricPattern").last.content = "mem.*"
+
+      connection.post("/api/vApp/#{id}/metrics/historic", stats)
     end
   end
 
