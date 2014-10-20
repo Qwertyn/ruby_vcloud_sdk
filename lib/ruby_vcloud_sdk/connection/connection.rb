@@ -166,7 +166,7 @@ module VCloudSdk
         if config_logger_dev.respond_to?(:path)
           rest_log_filename = File.join(
             File.dirname(config_logger_dev.path),
-            "vcloud_rest_rest.log")
+            "vcloud_rest.log")
           log_file = File.open(rest_log_filename, "w")
           log_file.sync = true
           @rest_logger = Logger.new(log_file)
