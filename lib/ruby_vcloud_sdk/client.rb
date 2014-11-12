@@ -52,8 +52,8 @@ module VCloudSdk
       end
     end
 
-    def get_statuses(type, page = 1, page_size = 25)
-      connection.get("/api/query?type=admin#{type}&page=#{page}&pageSize=#{page_size}&format=records")
+    def query(type, page = 1, page_size = 25)
+      connection.get("/api/query?type=#{type}&page=#{page}&pageSize=#{page_size}&format=records")
     end
 
     def hosts
