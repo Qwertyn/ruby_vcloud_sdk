@@ -162,7 +162,13 @@ module VCloudSdk
       def construct_rest_logger
         Config.logger.debug("constructing rest_logger")
 
-        config_logger_dev = Config.logger.instance_eval { @logdev }.dev
+        if Config.logger.class == ActiveSupport::TaggedLogging
+          logger = Config.logger.instance_variable_get(:@logger)
+        else
+          logger = Config.logger
+        end
+
+        config_logger_dev = logger.instance_eval { @logdev }.dev
         if config_logger_dev.respond_to?(:path)
           rest_log_filename = File.join(
             File.dirname(config_logger_dev.path),
