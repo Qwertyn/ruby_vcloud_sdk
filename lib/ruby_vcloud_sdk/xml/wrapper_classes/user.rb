@@ -11,7 +11,8 @@ module VCloudSdk
 
       def to_hash
         { login: name,
-          email: email }
+          email: email,
+          href_id: href_id }
       end
     end
   end
