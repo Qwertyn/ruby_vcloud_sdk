@@ -87,6 +87,15 @@ module VCloudSdk
       connection.post("/api/vApp/#{id}/metrics/historic", stats)
     end
 
+    def user(id)
+      connection.get("/api/admin/user/#{id}")
+    end
+
+    def org(id)
+      org = connection.get("/api/org/#{id}")
+      VCloudSdk::Organization.new(@session, org)
+    end
+
     def vm(id)
       vm = connection.get("/api/vApp/#{id}")
       VCloudSdk::VM.new(@session, vm.href)
