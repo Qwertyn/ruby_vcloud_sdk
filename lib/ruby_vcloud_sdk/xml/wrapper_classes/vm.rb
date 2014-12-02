@@ -150,6 +150,20 @@ module VCloudSdk
         false
       end
 
+      def change_disk_size(disk_name, mb)
+        @logger.debug("Updating disk size on vm #{name} to #{mb} MB")
+        hardware_section.hard_disks.each do |disk|
+          if disk.element_name == disk_name
+            if disk.host_resource['vcloud:capacity'].to_i >= mb
+              fail(CloudError,
+                'Virtual machine disk sizes may only be increased, not decreased.')
+            end
+
+            disk.host_resource['vcloud:capacity'] = mb
+          end
+        end
+      end
+
       def change_cpu_count(quantity)
         @logger.debug("Updating CPU count on vm #{name} to #{quantity} ")
         item = hardware_section.cpu

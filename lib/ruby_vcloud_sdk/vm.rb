@@ -373,6 +373,26 @@ module VCloudSdk
       self
     end
 
+    def update_internal_disk_by_name(name, capacity)
+      fail(CloudError,
+       "Invalid size in MB #{capacity}") if capacity <= 0
+
+      Config
+        .logger
+        .info "Creating internal disk #{name} of #{capacity}MB."
+
+      payload = entity_xml
+      payload.change_disk_size(name, capacity)
+
+      task = connection.post(
+        payload.reconfigure_link.href,
+        payload,
+        Xml::MEDIA_TYPE[:VM]
+      )
+      monitor_task(task)
+      self
+    end
+
     private
 
     def add_nic_index
