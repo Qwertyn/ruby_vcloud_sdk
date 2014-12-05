@@ -107,6 +107,21 @@ module VCloudSdk
       self
     end
 
+    def change_name_or_description(name: nil, description: nil)
+      fail CloudError,
+           'Please set correct name or description for VM' if name.nil? && description.nil?
+
+      payload = entity_xml
+      payload.name = name if name
+      payload.description = description if description
+
+      task = connection.put(payload.href,
+                            payload,
+                            Xml::MEDIA_TYPE[:VM])
+      monitor_task(task)
+      self
+    end
+
     def list_networks
       entity_xml
         .network_connection_section
