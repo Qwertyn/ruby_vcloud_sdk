@@ -145,6 +145,21 @@ module VCloudSdk
       self
     end
 
+    def change_name_or_description(name: nil, description: nil)
+      fail CloudError,
+        'Please set correct name or description for vApp' if name.nil? && description.nil?
+
+      payload = entity_xml
+      payload.name = name if name
+      payload.description = description if description
+
+      task = connection.put(payload.href,
+                            payload,
+                            Xml::MEDIA_TYPE[:VAPP])
+      monitor_task(task)
+      self
+    end
+
     def to_hash
       { :href_id               => @link.href_id,
         :org_id                => @link.org_id,
