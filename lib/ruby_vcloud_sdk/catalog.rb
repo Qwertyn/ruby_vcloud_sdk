@@ -151,15 +151,15 @@ module VCloudSdk
 
       vapp = connection.post(vdc.instantiate_vapp_template_link,
                              instantiate_vapp_params)
-      vapp.running_tasks.each do |task|
-        begin
-          monitor_task(task, @session.time_limit[:instantiate_vapp_template])
-        rescue ApiError => e
-          Config.logger.error(e, "Instantiate vApp template #{vapp_name} " +
-              "failed. Task #{task.operation} did not complete successfully.")
-          raise e
-        end
-      end
+      # vapp.running_tasks.each do |task|
+      #   begin
+      #     monitor_task(task, @session.time_limit[:instantiate_vapp_template])
+      #   rescue ApiError => e
+      #     Config.logger.error(e, "Instantiate vApp template #{vapp_name} " +
+      #         "failed. Task #{task.operation} did not complete successfully.")
+      #     raise e
+      #   end
+      # end
 
       vdc = find_vdc_by_name vdc_name # Refresh information about vdc
       vdc.find_vapp_by_name vapp_name
