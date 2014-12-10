@@ -142,10 +142,10 @@ module VCloudSdk
     end
 
     def instantiate_vapp_template(template_name, vdc_name, vapp_name,
-        description = nil, disk_locality = nil, network_config = nil, storage_profile_pair = nil)
+        description = nil, disk_locality = nil, network_config = nil, storage_profile = nil)
 
       instantiate_vapp_params = create_instantiate_vapp_params(
-          template_name, vapp_name, description, disk_locality, network_config, storage_profile_pair)
+          template_name, vapp_name, description, disk_locality, network_config, storage_profile)
 
       vdc = find_vdc_by_name vdc_name
 
@@ -335,7 +335,7 @@ module VCloudSdk
     end
 
     def create_instantiate_vapp_params(template_name,
-        vapp_name, description, disk_locality, network_config, storage_profile_pair)
+        vapp_name, description, disk_locality, network_config, storage_profile)
 
       source_vapp_template = retrieve_vapp_template_xml_node(template_name)
 
@@ -349,12 +349,13 @@ module VCloudSdk
       instantiate_vapp_params.source = source_vapp_template
       instantiate_vapp_params.all_eulas_accepted = true
       instantiate_vapp_params.linked_clone = false
-      instantiate_vapp_params.set_locality = locality_spec(disk_locality, storage_profile_pair)
+      instantiate_vapp_params.set_locality = locality_spec(
+          source_vapp_template, disk_locality, storage_profile)
 
       instantiate_vapp_params
     end
 
-    def locality_spec(disk_locality, storage_profile_pair)
+    def locality_spec(vapp_template, disk_locality, storage_profile_link)
       locality = {}
 
       disk = if disk_locality
@@ -363,16 +364,16 @@ module VCloudSdk
                current_disk
              end
 
-      storage_profile_pair.each_pair do |vm, sp|
-        storage_profile = if sp.href
-                            current_storage_profile = connection.get(sp)
-                            Config.logger.info "StorageProfile #{sp.name} no longer exists." unless current_storage_profile
-                            current_storage_profile
-                          end
+      storage_profile = if storage_profile_link
+               current_storage_profile = connection.get(storage_profile_link)
+               Config.logger.info "StorageProfile #{storage_profile_link.name} no longer exists." unless current_storage_profile
+               current_storage_profile
+             end
 
-        params = [disk, storage_profile]
+      params = [disk, storage_profile]
 
-        unless params.compact.empty?
+      unless params.compact.empty?
+        vapp_template.vms.each do |vm|
           locality[vm] = params
         end
       end
