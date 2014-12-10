@@ -13,7 +13,8 @@ module VCloudSdk
 
     def to_hash
       { name: name,
-        href_id: href_id }
+        href_id: href_id,
+        virtual_machines: virtual_machines }
     end
 
     def href_id
@@ -30,6 +31,13 @@ module VCloudSdk
 
     def href
       entity_xml.entity[:href]
+    end
+
+    def virtual_machines
+      xml_vms = connection.get(href).get_nodes("Vm")
+      xml_vms.map do |vm|
+        {identifier: vm.href_id, name: vm.name}
+      end
     end
   end
 end
