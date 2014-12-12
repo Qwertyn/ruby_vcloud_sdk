@@ -349,12 +349,12 @@ module VCloudSdk
       instantiate_vapp_params.source = source_vapp_template
       instantiate_vapp_params.all_eulas_accepted = true
       instantiate_vapp_params.linked_clone = false
-      instantiate_vapp_params.set_locality = locality_spec(disk_locality, storage_profile_pair)
+      instantiate_vapp_params.set_locality = locality_spec(source_vapp_template, disk_locality, storage_profile_pair)
 
       instantiate_vapp_params
     end
 
-    def locality_spec(disk_locality, storage_profile_pair)
+    def locality_spec(vapp_template, disk_locality, storage_profile_pair)
       locality = {}
 
       disk = if disk_locality
@@ -363,11 +363,12 @@ module VCloudSdk
                current_disk
              end
 
-      storage_profile_pair.each_pair do |vm, sp|
-        storage_profile = if sp.href
-                            current_storage_profile = connection.get(sp)
-                            Config.logger.info "StorageProfile #{sp.name} no longer exists." unless current_storage_profile
-                            current_storage_profile
+      vapp_template.vms.each do |vm|
+        sp = storage_profile_pair[vm.href_id]
+        storage_profile = if sp
+                           current_storage_profile = connection.get(sp)
+                           Config.logger.info "StorageProfile #{sp.name} no longer exists." unless current_storage_profile
+                           current_storage_profile
                           end
 
         params = [disk, storage_profile]
