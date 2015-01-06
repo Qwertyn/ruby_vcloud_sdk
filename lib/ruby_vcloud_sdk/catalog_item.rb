@@ -36,7 +36,8 @@ module VCloudSdk
     def virtual_machines
       xml_vms = connection.get(href).get_nodes("Vm")
       xml_vms.map do |vm|
-        {identifier: vm.href_id, name: vm.name}
+        disks = vm.hardware_section.hard_disks.map { |disk| disk.element_name }
+        {identifier: vm.href_id, name: vm.name, disks: disks}
       end
     end
   end

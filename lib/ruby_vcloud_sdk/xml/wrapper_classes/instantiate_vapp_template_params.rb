@@ -35,6 +35,32 @@ module VCloudSdk
         source_node["id"] = src["id"]
       end
 
+      def set_source_item=(sourced_item)
+        return unless sourced_item
+
+        raise "vApp sourced item already set." if @sourced_item_exists
+        @sourced_item_exists = true
+
+        sourced_item.each do |vm,v|
+          v.each do |d, sp|
+            node_sourced_item = add_child('SourcedItem')
+            node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
+            node_source['href'] = vm.href
+            instantiation_params = add_child('InstantiationParams', namespace.prefix, namespace.href, node_sourced_item)
+            vm.hardware_section.hardware.each do |item|
+              item.node.remove unless item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '17' ||
+                                      item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '3'
+              parent = item.get_rasd(RASD_TYPES[:PARENT])
+              parent.node.remove if parent
+            end
+            d.host_resource['vcloud:storageProfileHref'] = sp.href
+            d.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
+            instantiation_params.add_child(vm.hardware_section.node)
+            node_sourced_item.after(all_eulas_accepted.node)
+          end
+        end
+      end
+
       def set_locality=(locality)
         return unless locality
 
@@ -124,6 +150,10 @@ module VCloudSdk
 
       def is_source_delete
         get_nodes("IsSourceDelete").first
+      end
+
+      def all_eulas_accepted
+        get_nodes("AllEULAsAccepted").first
       end
     end
 
