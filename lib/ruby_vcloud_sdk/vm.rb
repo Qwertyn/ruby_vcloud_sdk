@@ -21,16 +21,16 @@ module VCloudSdk
     end
 
     def to_hash
-      nc = network_connection_section.network_connection(
-        network_connection_section.primary_network_connection_index
-      )
+      if (index = network_connection_section.primary_network_connection_index)
+        ip_address = network_connection_section.network_connection(index).ip_address
+      end
 
       { href_id: href_id,
         name: name,
         status: status,
         memory: memory,
         vcpu: vcpu,
-        primary_network_connection_ip_address: nc.ip_address,
+        primary_network_connection_ip_address: ip_address,
         computer_name: guest_customization_section.computer_name }
     end
 
