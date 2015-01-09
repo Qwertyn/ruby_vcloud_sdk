@@ -41,8 +41,8 @@ module VCloudSdk
         raise "vApp sourced item already set." if @sourced_item_exists
         @sourced_item_exists = true
 
-        sourced_item.each do |vm,v|
-          v.each do |d, sp|
+        sourced_item.each do |vm,values|
+          values.each do |disk, storage_profile|
             node_sourced_item = add_child('SourcedItem')
             node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
             node_source['href'] = vm.href
@@ -53,8 +53,8 @@ module VCloudSdk
               parent = item.get_rasd(RASD_TYPES[:PARENT])
               parent.node.remove if parent
             end
-            d.host_resource['vcloud:storageProfileHref'] = sp.href
-            d.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
+            disk.host_resource['vcloud:storageProfileHref'] = storage_profile.href
+            disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
             instantiation_params.add_child(vm.hardware_section.node)
             node_sourced_item.after(all_eulas_accepted.node)
           end

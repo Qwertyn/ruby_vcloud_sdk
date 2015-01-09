@@ -335,7 +335,7 @@ module VCloudSdk
     end
 
     def create_instantiate_vapp_params(template_name,
-                                       vapp_name, description, disk_locality, network_config, storage_profile_pair)
+      vapp_name, description, disk_locality, network_config, storage_profile_pair)
 
       source_vapp_template = retrieve_vapp_template_xml_node(template_name)
 
