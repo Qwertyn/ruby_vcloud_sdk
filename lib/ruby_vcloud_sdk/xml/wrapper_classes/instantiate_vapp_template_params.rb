@@ -41,7 +41,7 @@ module VCloudSdk
         raise "vApp sourced item already set." if @sourced_item_exists
         @sourced_item_exists = true
 
-        sourced_item.each do |vm,values|
+        sourced_item.each do |vm, values|
           values.each do |disk, storage_profile|
             node_sourced_item = add_child('SourcedItem')
             node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
