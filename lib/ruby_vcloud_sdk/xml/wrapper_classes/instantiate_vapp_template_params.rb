@@ -42,10 +42,13 @@ module VCloudSdk
         @sourced_item_exists = true
 
         sourced_item.each do |vm, values|
-          values.each do |disk, storage_profile|
+          values['hard_disks'].each do |disk, storage_profile|
             node_sourced_item = add_child('SourcedItem')
             node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
             node_source['href'] = vm.href
+            node_vm_general_params = add_child('VmGeneralParams', namespace.prefix, namespace.href, node_sourced_item)
+            node_vm_name = add_child('Name', namespace.prefix, namespace.href, node_vm_general_params)
+            node_vm_name.content = values['name']
             instantiation_params = add_child('InstantiationParams', namespace.prefix, namespace.href, node_sourced_item)
             vm.hardware_section.hardware.each do |item|
               item.node.remove unless item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '17' ||
@@ -53,7 +56,7 @@ module VCloudSdk
               parent = item.get_rasd(RASD_TYPES[:PARENT])
               parent.node.remove if parent
             end
-            disk.host_resource['vcloud:storageProfileHref'] = storage_profile.href
+            disk.host_resource['vcloud:storageProfileHref'] = storage_profile
             disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
             instantiation_params.add_child(vm.hardware_section.node)
             node_sourced_item.after(all_eulas_accepted.node)

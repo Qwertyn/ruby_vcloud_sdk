@@ -142,10 +142,10 @@ module VCloudSdk
     end
 
     def instantiate_vapp_template(template_name, vdc_name, vapp_name,
-        description = nil, disk_locality = nil, network_config = nil, storage_profile_pair = nil)
+        description = nil, disk_locality = nil, network_config = nil, virtual_machine_params = nil)
 
       instantiate_vapp_params = create_instantiate_vapp_params(
-          template_name, vapp_name, description, disk_locality, network_config, storage_profile_pair)
+          template_name, vapp_name, description, disk_locality, network_config, virtual_machine_params)
 
       vdc = find_vdc_by_name vdc_name
 
@@ -334,8 +334,9 @@ module VCloudSdk
       connection.get(vapp_template.href)
     end
 
+    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'hard_disks' => {'Hard disk 1' => "http://myhost.com"}} }
     def create_instantiate_vapp_params(template_name,
-      vapp_name, description, disk_locality, network_config, storage_profile_pair)
+      vapp_name, description, disk_locality, network_config, vm_params)
 
       source_vapp_template = retrieve_vapp_template_xml_node(template_name)
 
@@ -349,29 +350,29 @@ module VCloudSdk
       instantiate_vapp_params.source = source_vapp_template
       instantiate_vapp_params.all_eulas_accepted = true
       instantiate_vapp_params.linked_clone = false
-      instantiate_vapp_params.set_source_item = source_spec(source_vapp_template, storage_profile_pair)
-      # instantiate_vapp_params.set_locality = source_spec(source_vapp_template, disk_locality, storage_profile_pair)
+      instantiate_vapp_params.set_source_item = source_spec(source_vapp_template, vm_params)
 
       instantiate_vapp_params
     end
 
-    def source_spec(vapp_template, storage_profile_pair)
+    def source_spec(vapp_template, vm_params)
       source = {}
 
       vapp_template.vms.each do |vm|
+        source[vm] = {}
         vm.hardware_section.hard_disks.each do |disk|
-          vm_pair = storage_profile_pair[vm.href_id]
-          sp = vm_pair[disk.element_name] if vm_pair
+          vm_param = vm_params[vm.href_id]
+          sp = vm_param['hard_disks'][disk.element_name] if vm_param
 
           storage_profile = if sp
                               current_storage_profile = connection.get(sp)
-                              Config.logger.info "StorageProfile #{sp.name} no longer exists." unless current_storage_profile
+                              Config.logger.info "StorageProfile #{sp} no longer exists." unless current_storage_profile
                               current_storage_profile
                             end
 
           unless storage_profile.nil?
-            disk_params = {disk => storage_profile}
-            source[vm] = disk_params
+            vm_param['hard_disks'][disk] = vm_param['hard_disks'].delete disk.element_name
+            source[vm] = vm_param
           end
         end
       end
