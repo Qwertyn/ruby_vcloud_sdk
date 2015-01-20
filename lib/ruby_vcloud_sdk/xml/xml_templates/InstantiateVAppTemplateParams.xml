@@ -2,6 +2,7 @@
 <ns7:InstantiateVAppTemplateParams
         xmlns="http://www.vmware.com/vcloud/extension/v1"
         xmlns:vcloud="http://www.vmware.com/vcloud/v1.5"
+        xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
         xmlns:ns2="http://www.vmware.com/vcloud/v1"
         xmlns:ns3="http://schemas.dmtf.org/ovf/envelope/1"
         xmlns:ns4="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
@@ -11,9 +12,8 @@
         xmlns:ns8="http://schemas.dmtf.org/ovf/environment/1"
         xmlns:ns9="http://www.vmware.com/vcloud/extension/v1.5"
         xmlns:ns10="http://www.vmware.com/vcloud/versions" linkedClone="false" powerOn="false" deploy="false" name="">
-  <ns7:Description></ns7:Description>
+  <ns7:Description/>
   <ns7:VAppParent href="" />
-  <ns7:InstantiationParams/>
   <ns7:Source/>
   <ns7:IsSourceDelete>false</ns7:IsSourceDelete>
   <ns7:AllEULAsAccepted>false</ns7:AllEULAsAccepted>

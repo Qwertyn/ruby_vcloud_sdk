@@ -58,7 +58,7 @@ module VCloudSdk
             end
             disk.host_resource['vcloud:storageProfileHref'] = storage_profile
             disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
-            instantiation_params.add_child(vm.hardware_section.node)
+            instantiation_params.add_child(vm.hardware_section.node.clone)
             node_sourced_item.after(all_eulas_accepted.node)
           end
         end
