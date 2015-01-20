@@ -408,6 +408,11 @@ module VCloudSdk
       self
     end
 
+    def vapp
+      vapp = connection.get("/api/vApp/#{entity_xml.vapp_link.href_id}")
+      VCloudSdk::VApp.new(@session, vapp)
+    end
+
     private
 
     def add_nic_index
@@ -426,11 +431,6 @@ module VCloudSdk
         .tap do |params|
         params.disk_href = disk.href
       end
-    end
-
-    def vapp
-      vapp_link = entity_xml.vapp_link
-      VCloudSdk::VApp.new(@session, vapp_link.href)
     end
 
     def media_insert_or_eject_params(media)
