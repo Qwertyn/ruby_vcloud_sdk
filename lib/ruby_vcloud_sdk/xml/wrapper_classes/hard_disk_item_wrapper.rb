@@ -18,6 +18,10 @@ module VCloudSdk
         host_resource[HOST_RESOURCE_ATTRIBUTE[:CAPACITY]]
       end
 
+      def vcloud_capacity_mb
+        host_resource["vcloud:#{HOST_RESOURCE_ATTRIBUTE[:CAPACITY]}"]
+      end
+
       def disk_id
         get_rasd_content(RASD_TYPES[:ADDRESS_ON_PARENT])
       end

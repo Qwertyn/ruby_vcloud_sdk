@@ -149,8 +149,8 @@ module VCloudSdk
 
       vdc = find_vdc_by_name vdc_name
 
-      vapp = connection.post(vdc.instantiate_vapp_template_link,
-                             instantiate_vapp_params)
+      # vapp = connection.post(vdc.instantiate_vapp_template_link,
+      #                        instantiate_vapp_params)
       # vapp.running_tasks.each do |task|
       #   begin
       #     monitor_task(task, @session.time_limit[:instantiate_vapp_template])
@@ -334,7 +334,7 @@ module VCloudSdk
       connection.get(vapp_template.href)
     end
 
-    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'hard_disks' => {'Hard disk 1' => "http://myhost.com"}} }
+    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'vcpu_per_vm' => '2', 'core_per_socket' => '2', 'memory' => '1024','hard_disks' => {'Hard disk 1' => {'storage_policy' => "http://myhost.com", 'capacity' => '1024'}} }
     def create_instantiate_vapp_params(template_name,
       vapp_name, description, disk_locality, network_config, vm_params)
 
@@ -362,7 +362,7 @@ module VCloudSdk
         source[vm] = {}
         vm.hardware_section.hard_disks.each do |disk|
           vm_param = vm_params[vm.href_id]
-          sp = vm_param['hard_disks'][disk.element_name] if vm_param
+          sp = vm_param['hard_disks'][disk.element_name]['storage_policy'] if vm_param
 
           storage_profile = if sp
                               current_storage_profile = connection.get(sp)

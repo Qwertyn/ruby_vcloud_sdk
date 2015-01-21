@@ -36,8 +36,15 @@ module VCloudSdk
     def virtual_machines
       xml_vms = connection.get(href).get_nodes("Vm")
       xml_vms.map do |vm|
-        disks = vm.hardware_section.hard_disks.map { |disk| disk.element_name }
-        {identifier: vm.href_id, name: vm.name, disks: disks}
+        disks = vm.hardware_section.hard_disks.map { |disk| Hash[:label, disk.element_name, :capacity, disk.vcloud_capacity_mb] }
+        {
+          identifier: vm.href_id,
+          name: vm.name,
+          disks: disks,
+          cpus: vm.hardware_section.cpu.get_rasd("VirtualQuantity").content,
+          cores_per_socket: vm.hardware_section.cpu.get_vmw("CoresPerSocket").content,
+          memory: vm.hardware_section.memory.get_rasd("VirtualQuantity").content
+        }
       end
     end
   end

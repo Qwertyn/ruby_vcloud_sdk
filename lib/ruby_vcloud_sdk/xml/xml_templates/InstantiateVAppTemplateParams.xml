@@ -5,6 +5,7 @@
         xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
         xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
         xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+        xmlns:vmw="http://www.vmware.com/schema/ovf"
         xmlns:ns2="http://www.vmware.com/vcloud/v1"
         xmlns:ns3="http://schemas.dmtf.org/ovf/envelope/1"
         xmlns:ns4="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"

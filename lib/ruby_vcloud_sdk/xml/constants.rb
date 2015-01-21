@@ -8,6 +8,8 @@ module VCloudSdk
     RASD = "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/" +
            "CIM_ResourceAllocationSettingData"
 
+    VMW = "http://www.vmware.com/schema/ovf"
+
     # http://blogs.vmware.com/vapp/2009/11/virtual-hardware-in-ovf-part-1.html
     HARDWARE_TYPE = {
         :CPU => "3",

@@ -170,6 +170,12 @@ module VCloudSdk
         item.set_rasd("VirtualQuantity", quantity)
       end
 
+      def change_cores_per_socket(quantity)
+        @logger.debug("Updating cores count per socket on vm #{name} to #{quantity} ")
+        item = hardware_section.cpu
+        item.set_vmw("CoresPerSocket", quantity)
+      end
+
       def change_memory(mb)
         @logger.debug("Updating memory on vm #{name} to #{mb} MB")
         item = hardware_section.memory
