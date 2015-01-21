@@ -149,8 +149,9 @@ module VCloudSdk
 
       vdc = find_vdc_by_name vdc_name
 
-      # vapp = connection.post(vdc.instantiate_vapp_template_link,
-      #                        instantiate_vapp_params)
+      vapp = connection.post(vdc.instantiate_vapp_template_link,
+                             instantiate_vapp_params)
+
       # vapp.running_tasks.each do |task|
       #   begin
       #     monitor_task(task, @session.time_limit[:instantiate_vapp_template])
@@ -334,7 +335,7 @@ module VCloudSdk
       connection.get(vapp_template.href)
     end
 
-    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'vcpu_per_vm' => '2', 'core_per_socket' => '2', 'memory' => '1024','hard_disks' => {'Hard disk 1' => {'storage_policy' => "http://myhost.com", 'capacity' => '1024'}} }
+    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'vcpu_per_vm' => '2', 'core_per_socket' => '2', 'memory' => '1024','hard_disks' => {'Hard disk 1' => {'storage_policy' => "http://myhost.com", 'disk_space' => '1024'}} }
     def create_instantiate_vapp_params(template_name,
       vapp_name, description, disk_locality, network_config, vm_params)
 
