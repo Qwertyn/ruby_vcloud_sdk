@@ -6,6 +6,7 @@ require_relative "catalog"
 require_relative "session"
 require_relative "infrastructure"
 require_relative "right_record"
+require_relative "vapp_template"
 
 module VCloudSdk
 
@@ -104,6 +105,11 @@ module VCloudSdk
     def vapp(id)
       vapp = connection.get("/api/vApp/#{id}")
       VCloudSdk::VApp.new(@session, vapp)
+    end
+
+    def vapp_template(id)
+      vapp_template = connection.get("/api/vAppTemplate/#{id}")
+      VCloudSdk::VappTemplate.new(@session, vapp_template)
     end
   end
 end
