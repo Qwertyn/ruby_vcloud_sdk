@@ -25,6 +25,12 @@ module VCloudSdk
         .reduce(IpRanges.new) do |result, i|
           result + IpRanges.new("#{i.start_address}-#{i.end_address}")
         end
+    rescue
+      nil
+    end
+
+    def id
+      entity_xml.id
     end
 
     def allocated_ips

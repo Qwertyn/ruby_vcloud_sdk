@@ -23,6 +23,15 @@ module VCloudSdk
       end
     end
 
+    def networks
+      networks_link = @session.query_list.networks_query_list
+      query_list = VCloudSdk::QueryList.new(@session, networks_link)
+
+      query_list.networks.map do |network_link|
+        VCloudSdk::Network.new(@session, network_link)
+      end
+    end
+
     def roles
       roles_link = @session.query_list.roles_query_list
       query_list = VCloudSdk::QueryList.new(@session, roles_link)

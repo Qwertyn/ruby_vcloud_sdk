@@ -214,6 +214,10 @@ module VCloudSdk
       storage_profile
     end
 
+    def org
+      VCloudSdk::Organization.new(@session, entity_xml.org_link)
+    end
+
     private
 
     def storage_profile_records
