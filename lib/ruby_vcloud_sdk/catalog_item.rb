@@ -11,6 +11,10 @@ module VCloudSdk
       @link = link
     end
 
+    def catalog
+      VCloudSdk::Catalog.new(@session, entity_xml.catalog_link)
+    end
+
     def to_hash
       { name: name,
         href_id: href_id,

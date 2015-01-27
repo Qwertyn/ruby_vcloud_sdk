@@ -13,6 +13,10 @@ module VCloudSdk
       def entity
         get_nodes(XML_TYPE[:ENTITY]).first
       end
+
+      def catalog_link
+        get_nodes("Link", {"rel" => "up"}, true).first
+      end
     end
 
   end
