@@ -29,8 +29,8 @@ module VCloudSdk
       nil
     end
 
-    def id
-      entity_xml.id
+    def href_id
+      entity_xml.href_id
     end
 
     def allocated_ips

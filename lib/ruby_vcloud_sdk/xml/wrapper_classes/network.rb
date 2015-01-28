@@ -12,11 +12,6 @@ module VCloudSdk
       def name=(value)
         @root["name"] = value
       end
-
-      def id
-        @root["href"][/.{8}-.{4}-.{4}-.{4}-.{12}/]
-      end
     end
-
   end
 end

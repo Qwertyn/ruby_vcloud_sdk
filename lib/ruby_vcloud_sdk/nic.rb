@@ -31,7 +31,7 @@ module VCloudSdk
         name: element_name,
         mac_address: mac_address,
         ip_address: ip_address,
-        network_identifier: network.try(:id),
+        network_identifier: network.try(:href_id),
         is_primary: @is_primary,
         is_connected: is_connected
       }
@@ -40,5 +40,3 @@ module VCloudSdk
     alias_method :nic_index, :network_connection_index
   end
 end
-
-#       :network_join_id => :integer,

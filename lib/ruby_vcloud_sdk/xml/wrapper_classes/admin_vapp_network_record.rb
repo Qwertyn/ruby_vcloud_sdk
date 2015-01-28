@@ -3,7 +3,7 @@ module VCloudSdk
     class AdminVAppNetworkRecord < VCloudSdk::Xml::Network
       def to_hash
         {
-          id: id,
+          href_id: href_id,
           type: "VCloudVappNetwork",
           dns1: @root["dns1"],
           dns2: @root["dns2"],
