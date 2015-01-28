@@ -35,6 +35,14 @@ module VCloudSdk
         connection[primary_attr] = value.to_s
       end
 
+      def ip_address
+        connection["vcloud:ipAddress"]
+      end
+
+      def is_connected
+        connection.content != "none"
+      end
+
       def nic_index
         get_rasd_content(RASD_TYPES[:ADDRESS_ON_PARENT])
       end
@@ -76,6 +84,10 @@ module VCloudSdk
 
       def network=(value)
         connection.content = value
+      end
+
+      def element_name
+        get_rasd_content(RASD_TYPES[:ELEMENT_NAME])
       end
 
       private

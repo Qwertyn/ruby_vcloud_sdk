@@ -15,9 +15,12 @@ module VCloudSdk
       @link = link
     end
 
-
     def vapps
       entity_xml.vapps
+    end
+
+    def networks
+      entity_xml.networks
     end
 
     def roles

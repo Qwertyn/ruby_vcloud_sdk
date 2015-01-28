@@ -195,6 +195,10 @@ module VCloudSdk
                   { status: TASK_STATUS[:RUNNING] })
       end
 
+      def ip_scope
+        get_nodes(:IpScope).first
+      end
+
       def create_xpath_query(type_name, attrs = nil, only_immediate = false,
           namespace = VCLOUD_NAMESPACE)
         qualified_name = create_qualified_name(type_name, namespace)

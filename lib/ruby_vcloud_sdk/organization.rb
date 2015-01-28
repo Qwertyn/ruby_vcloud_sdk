@@ -35,6 +35,12 @@ module VCloudSdk
       end
     end
 
+    def networks
+      entity_xml.networks.map do |network_link|
+        VCloudSdk::Network.new(@session, network_link)
+      end
+    end
+
     def to_hash
       { :identifier => id,
         :label      => @link.name }

@@ -46,6 +46,12 @@ module VCloudSdk
                   .first
       end
 
+      def org_link
+        get_nodes(XML_TYPE[:LINK],
+                  { type: MEDIA_TYPE[:ORGANIZATION] },
+                  true).first
+      end
+
       # vApp Template names are not unique so multiple ones can be returned.
       def get_vapp_templates(name)
         get_nodes("ResourceEntity",

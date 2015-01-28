@@ -167,6 +167,8 @@ module VCloudSdk
           "application/vnd.vmware.vcloud.networkSection+xml",
         :NETWORK_CONFIG_SECTION =>
           "application/vnd.vmware.vcloud.networkConfigSection+xml",
+        :NETWORK_CARD_SECTION =>
+          "application/vnd.vmware.vcloud.networkConfigSection+xml",
         :PRODUCT_SECTIONS =>
           "application/vnd.vmware.vcloud.productSections+xml",
         :NETWORK_CONNECTION_SECTION =>

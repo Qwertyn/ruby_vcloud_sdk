@@ -24,6 +24,22 @@ module VCloudSdk
         get_nodes(XML_TYPE[:ROLERECORD])
       end
 
+      def networks
+        get_nodes(XML_TYPE[:ADMINVAPPNETWORKRECORD])
+      end
+
+      def admin_vapp_network_records
+        get_nodes(XML_TYPE[:ADMINVAPPNETWORKRECORD])
+      end
+
+      def external_networks
+        get_nodes(XML_TYPE[:NETWORKRECORD])
+      end
+
+      def admin_org_network_records
+        get_nodes(XML_TYPE[:ADMINORGNETWORKRECORD])
+      end
+
       def vapp_link(name)
         get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first || get_nodes(XML_TYPE[:ADMINVAPPRECORD], { name: name }, true).first
       end

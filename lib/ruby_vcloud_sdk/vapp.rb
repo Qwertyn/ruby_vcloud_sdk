@@ -173,6 +173,21 @@ module VCloudSdk
         :memory_allocation_mb  => @link.memory_allocation_mb }
     end
 
+    def vdc
+      VCloudSdk::VDC.new(@session, entity_xml.vdc_link)
+    end
+
+    def find_network_by_name(network_name)
+      network_link = entity_xml.
+        network_config_section.
+        network_configs.
+        select { |vapp_network| vapp_network.network_name == network_name }.
+        first.try(:link)
+
+      return unless network_link
+      VCloudSdk::Network.new(@session, network_link)
+    end
+
     private
 
     def recompose_from_vapp_template_param(template)
