@@ -45,6 +45,7 @@ module VCloudSdk
           identifier: vm.href_id,
           name: vm.name,
           disks: disks,
+          nics: vm.hardware_section.nics.map(&:nic_index),
           cpus: vm.hardware_section.cpu.get_rasd("VirtualQuantity").content,
           cores_per_socket: vm.hardware_section.cpu.get_vmw("CoresPerSocket").content,
           memory: vm.hardware_section.memory.get_rasd("VirtualQuantity").content
