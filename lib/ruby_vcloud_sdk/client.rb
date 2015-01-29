@@ -116,5 +116,22 @@ module VCloudSdk
       network = connection.get("/api/network/#{id}")
       VCloudSdk::Network.new(@session, network.href)
     end
+
+    def get_vsphere_credentials
+      servers_list = Hash.from_xml(connection.get('/api/admin/extension/vimServerReferences').to_s)
+      links = Array.wrap(servers_list['VMWVimServerReferences']).map do |server|
+        server['VimServerReference']['href']
+      end
+
+      links.map do |href|
+        vcenter = Hash.from_xml(connection.get(href).to_s)['VimServer']
+
+        {
+          url: vcenter['Url'],
+          login: vcenter['Username'],
+          password: ''
+        }
+      end
+    end
   end
 end
