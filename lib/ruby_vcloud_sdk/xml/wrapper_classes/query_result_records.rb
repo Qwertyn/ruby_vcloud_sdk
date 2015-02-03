@@ -40,6 +40,10 @@ module VCloudSdk
         get_nodes(XML_TYPE[:ADMINORGNETWORKRECORD])
       end
 
+      def org_vdc_network_records
+        get_nodes(XML_TYPE[:ORGVDCNETWORKRECORD])
+      end
+
       def vapp_link(name)
         get_nodes(XML_TYPE[:VAPPRECORD], { name: name }, true).first || get_nodes(XML_TYPE[:ADMINVAPPRECORD], { name: name }, true).first
       end
