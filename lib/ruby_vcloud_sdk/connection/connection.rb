@@ -173,7 +173,7 @@ module VCloudSdk
           rest_log_filename = File.join(
             File.dirname(config_logger_dev.path),
             "vcloud_rest.log")
-          log_file = File.open(rest_log_filename, "w")
+          log_file = File.open(rest_log_filename, "a")
           log_file.sync = true
           @rest_logger = Logger.new(log_file)
           @rest_logger.level = Config.logger.level
