@@ -429,7 +429,7 @@ module VCloudSdk
 
       network = find_network_by_name(network_config.network_name)
       target_vapp_net_name = network_config.vapp_net_name.nil? ?
-                             network_config.network_name : network_config.vapp_net_name
+                             network.name : network_config.vapp_net_name
 
       instantiate_vapp_params.set_network_config(target_vapp_net_name,
                                                  network.href["href"].to_s,
