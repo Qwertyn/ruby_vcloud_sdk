@@ -11,8 +11,8 @@ module VCloudSdk
           name: @root["name"],
           netmask: @root["netmask"],
 
-          org: @root["org"],
-          vapp: @root["vApp"],
+          org: @root["org"].split('/')[-1],
+          vapp_href_id: @root["vApp"].split('/')[-1],
           vapp_name: @root["vappName"]
         }
       end

@@ -137,5 +137,9 @@ module VCloudSdk
         }
       end
     end
+
+    def generate_network_config(network_name)
+      VCloudSdk::NetworkConfig.new(network_name)
+    end
   end
 end
