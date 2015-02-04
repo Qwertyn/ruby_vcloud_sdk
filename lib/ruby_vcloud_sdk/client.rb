@@ -18,7 +18,7 @@ module VCloudSdk
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
            :vdc_exists?, :vapps, :list_vapps, :find_vapp_by_name,
-           :vapp_exists?, :organizations, :roles, :entity, :networks
+           :vapp_exists?, :organizations, :roles, :networks
 
     def initialize(url, username, password, options = {}, logger = nil)
       @url = url
@@ -115,6 +115,10 @@ module VCloudSdk
     def network(id)
       network = connection.get("/api/network/#{id}")
       VCloudSdk::Network.new(@session, network.href)
+    end
+
+    def entity(urn)
+      connection.get("/api/entity/#{urn}")
     end
 
     def get_vsphere_credentials
