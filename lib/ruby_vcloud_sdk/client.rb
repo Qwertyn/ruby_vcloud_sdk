@@ -121,6 +121,10 @@ module VCloudSdk
       connection.get("/api/entity/#{urn}")
     end
 
+    def storage_policy(id)
+      connection.get("/api/vdcStorageProfile/#{id}")
+    end
+
     def get_vsphere_credentials
       servers_list = Hash.from_xml(connection.get('/api/admin/extension/vimServerReferences').to_s)
       links = Array.wrap(servers_list['VMWVimServerReferences']).map do |server|
