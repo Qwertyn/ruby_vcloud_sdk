@@ -340,6 +340,7 @@ module VCloudSdk
       :ORGREFERENCES => "OrgReferences",
       :ORGSETTINGS => "OrgSettings",
       :ORGVAPPTEMPLATELEASESETTINGS => "OrgVAppTemplateLeaseSettings",
+      :ORGVDCNETWORKRECORD => "OrgVdcNetworkRecord",
       :ORGVDCRECORD => "OrgVdcRecord",
       :ORGVDCREFERENCE => "OrgVdcReference",
       :ORGVDCREFERENCES => "OrgVdcReferences",
