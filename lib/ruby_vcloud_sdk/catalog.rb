@@ -363,18 +363,8 @@ module VCloudSdk
         source[vm] = {}
         vm.hardware_section.hard_disks.each do |disk|
           vm_param = vm_params[vm.href_id]
-          sp = vm_param['hard_disks'][disk.element_name]['storage_policy'] if vm_param
-
-          storage_profile = if sp
-                              current_storage_profile = connection.get(sp)
-                              Config.logger.info "StorageProfile #{sp} no longer exists." unless current_storage_profile
-                              current_storage_profile
-                            end
-
-          unless storage_profile.nil?
-            vm_param['hard_disks'][disk] = vm_param['hard_disks'].delete disk.element_name
-            source[vm] = vm_param
-          end
+          vm_param['hard_disks'][disk] = vm_param['hard_disks'].delete disk.element_name
+          source[vm] = vm_param
         end
       end
       source

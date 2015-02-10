@@ -15,7 +15,8 @@ module VCloudSdk
       {
         name: name,
         capacity: capacity,
-        bus_sub_type: bus_sub_type
+        bus_sub_type: bus_sub_type,
+        storage_profile_id: storage_profile_id
       }
     end
 

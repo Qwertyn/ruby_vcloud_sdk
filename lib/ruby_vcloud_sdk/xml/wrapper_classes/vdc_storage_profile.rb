@@ -9,6 +9,10 @@ module VCloudSdk
       def name=(value)
         @root["name"] = value
       end
+
+      def href
+        @root["href"]
+      end
     end
 
   end
