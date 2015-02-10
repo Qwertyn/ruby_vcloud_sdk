@@ -127,14 +127,15 @@ module VCloudSdk
 
     def get_vsphere_credentials
       servers_list = Hash.from_xml(connection.get('/api/admin/extension/vimServerReferences').to_s)
-      links = Array.wrap(servers_list['VMWVimServerReferences']).map do |server|
-        server['VimServerReference']['href']
+      links = Array.wrap(servers_list['VMWVimServerReferences']['VimServerReference']).map do |server|
+        server['href']
       end
 
       links.map do |href|
         vcenter = Hash.from_xml(connection.get(href).to_s)['VimServer']
 
         {
+          name: vcenter['name'],
           url: vcenter['Url'],
           login: vcenter['Username'],
           password: ''
