@@ -3,6 +3,7 @@ require_relative "infrastructure"
 require_relative "powerable"
 require_relative "internal_disk"
 require_relative "nic"
+require_relative "snapshot"
 
 module VCloudSdk
   class VM
@@ -405,6 +406,12 @@ module VCloudSdk
     def vapp
       vapp = connection.get("/api/vApp/#{entity_xml.vapp_link.href_id}")
       VCloudSdk::VApp.new(@session, vapp)
+    end
+
+    def snapshot
+      snapshot_section = entity_xml.snapshot_section
+      snapshot = snapshot_section.get_nodes("Snapshot").first
+      VCloudSdk::Snapshot.new(snapshot)
     end
 
     private

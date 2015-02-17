@@ -183,6 +183,8 @@ module VCloudSdk
           "application/vnd.vmware.vcloud.guestCustomizationSection+xml",
         :CUSTOMIZATION_SECTION =>
           "application/vnd.vmware.vcloud.customizationSection+xml",
+        :SNAPSHOT_SECTION =>
+          "application/vnd.vmware.vcloud.snapshotSection+xml",
         :RASD_ITEM => "application/vnd.vmware.vcloud.rasdItem+xml",
         :RASD_ITEMS_LIST => "application/vnd.vmware.vcloud.rasdItemsList+xml",
         :OVF => "text/xml",

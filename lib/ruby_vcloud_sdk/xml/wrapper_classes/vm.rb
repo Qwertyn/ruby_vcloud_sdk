@@ -114,6 +114,10 @@ module VCloudSdk
         get_nodes("ProductSection", nil, true, OVF).first
       end
 
+      def snapshot_section
+        get_nodes("SnapshotSection", type: MEDIA_TYPE[:SNAPSHOT_SECTION]).first
+      end
+
       # hardware modification methods
 
       def add_hard_disk(capacity, bus_type, bus_sub_type)
