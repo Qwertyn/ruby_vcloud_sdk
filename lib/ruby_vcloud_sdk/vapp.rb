@@ -93,6 +93,12 @@ module VCloudSdk
       self
     end
 
+    def networks
+      entity_xml.networks.map do |network_link|
+        VCloudSdk::Network.new(@session, network_link)
+      end
+    end
+
     def list_networks
       entity_xml
         .network_config_section

@@ -5,6 +5,10 @@ module VCloudSdk
         get_nodes("Description").first.content
       end
 
+      def networks
+        get_nodes(XML_TYPE[:LINK], type: MEDIA_TYPE[:VAPP_NETWORK])
+      end
+
       def network_config_section
         get_nodes("NetworkConfigSection").first
       end
