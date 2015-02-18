@@ -42,30 +42,30 @@ module VCloudSdk
         @sourced_item_exists = true
 
         sourced_item.each do |vm, values|
+          node_sourced_item = add_child('SourcedItem')
+          node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
+          node_source['href'] = vm.href
+          node_vm_general_params = add_child('VmGeneralParams', namespace.prefix, namespace.href, node_sourced_item)
+          node_vm_name = add_child('Name', namespace.prefix, namespace.href, node_vm_general_params)
+          node_vm_name.content = values['name']
+          instantiation_params = add_child('InstantiationParams', namespace.prefix, namespace.href, node_sourced_item)
+          vm.hardware_section.hardware.each do |item|
+            item.node.remove unless item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '17' ||
+                item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '3' ||
+                item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '4'
+            parent = item.get_rasd(RASD_TYPES[:PARENT])
+            parent.node.remove if parent
+          end
           values['hard_disks'].each do |disk, disk_params|
-            node_sourced_item = add_child('SourcedItem')
-            node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
-            node_source['href'] = vm.href
-            node_vm_general_params = add_child('VmGeneralParams', namespace.prefix, namespace.href, node_sourced_item)
-            node_vm_name = add_child('Name', namespace.prefix, namespace.href, node_vm_general_params)
-            node_vm_name.content = values['name']
-            instantiation_params = add_child('InstantiationParams', namespace.prefix, namespace.href, node_sourced_item)
-            vm.hardware_section.hardware.each do |item|
-              item.node.remove unless item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '17' ||
-                                      item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '3'  ||
-                                      item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '4'
-              parent = item.get_rasd(RASD_TYPES[:PARENT])
-              parent.node.remove if parent
-            end
             disk.host_resource['vcloud:storageProfileHref'] = disk_params['storage_policy']
             disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
             disk.host_resource['vcloud:capacity'] = disk_params['disk_space']
-            vm.change_cpu_count(values['vcpu_per_vm'])
-            vm.change_cores_per_socket(values['core_per_socket'])
-            vm.change_memory(values['memory'])
-            instantiation_params.add_child(vm.hardware_section.node.clone)
-            node_sourced_item.after(all_eulas_accepted.node)
           end
+          vm.change_cpu_count(values['vcpu_per_vm'])
+          vm.change_cores_per_socket(values['core_per_socket'])
+          vm.change_memory(values['memory'])
+          instantiation_params.add_child(vm.hardware_section.node.clone)
+          node_sourced_item.after(all_eulas_accepted.node)
         end
       end
 
