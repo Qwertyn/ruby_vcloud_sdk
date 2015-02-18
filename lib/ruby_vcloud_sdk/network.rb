@@ -4,13 +4,25 @@ require_relative "ip_ranges"
 module VCloudSdk
   class Network
     include Infrastructure
-
     extend Forwardable
     def_delegator :entity_xml, :name
 
     def initialize(session, link)
       @session = session
       @link = link
+    end
+
+    def to_hash
+      {
+        dns1: entity_xml.dns1.try(:content),
+        dns2: entity_xml.dns2.try(:content),
+        gateway: entity_xml.gateway.try(:content),
+        netmask: entity_xml.netmask.try(:content),
+        ranges: ip_ranges.try(:ranges).to_a,
+        name: name,
+        href_id: entity_xml.href_id,
+        type: entity_xml.type
+      }
     end
 
     def href
