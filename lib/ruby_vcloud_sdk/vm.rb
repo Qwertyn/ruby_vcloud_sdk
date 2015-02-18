@@ -411,7 +411,25 @@ module VCloudSdk
     def snapshot
       snapshot_section = entity_xml.snapshot_section
       snapshot = snapshot_section.get_nodes("Snapshot").first
-      VCloudSdk::Snapshot.new(snapshot)
+      VCloudSdk::Snapshot.new(snapshot) if snapshot
+    end
+
+    def create_snapshot(name: '', memory: true, quiesce: true)
+      Config.logger.info "Creating snapshot #{name}"
+
+      snapshot = Xml::WrapperFactory.
+          create_instance("CreateSnapshotParams").
+          tap do |params|
+            params.name = name
+            params.memory = memory
+            params.quiesce = quiesce
+          end
+
+      task = connection.post("#{entity_xml.href}/action/createSnapshot",
+                             snapshot,
+                             Xml::MEDIA_TYPE[:SNAPSHOT_CREATE_PARAMS])
+      monitor_task(task)
+      self
     end
 
     private
