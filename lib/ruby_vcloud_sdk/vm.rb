@@ -440,6 +440,15 @@ module VCloudSdk
       self
     end
 
+    def revert_to_current_snapshot
+      Config.logger.info "Reverting to snapshot"
+
+      task = connection.post("#{entity_xml.href}/action/revertToCurrentSnapshot", "")
+      monitor_task(task)
+      self
+
+    end
+
     private
 
     def add_nic_index
