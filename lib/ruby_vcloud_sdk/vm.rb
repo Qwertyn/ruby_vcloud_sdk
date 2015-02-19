@@ -432,6 +432,14 @@ module VCloudSdk
       self
     end
 
+    def remove_snapshots
+      Config.logger.info "Removing all snapshots"
+
+      task = connection.post("#{entity_xml.href}/action/removeAllSnapshots", "")
+      monitor_task(task)
+      self
+    end
+
     private
 
     def add_nic_index
