@@ -94,7 +94,7 @@ module VCloudSdk
     end
 
     def networks
-      @session.org.networks.map do |network_link|
+      entity_xml.available_networks.map do |network_link|
         VCloudSdk::Network.new(@session, network_link)
       end
     end
