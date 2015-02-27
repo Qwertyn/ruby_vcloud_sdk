@@ -30,6 +30,10 @@ module VCloudSdk
       def dns2
         get_nodes("Dns2").first
       end
+
+      def vdc_link
+        get_nodes("Link", {"rel" => "up"}, true).first
+      end
     end
   end
 end

@@ -1,5 +1,6 @@
 require_relative "infrastructure"
 require_relative "ip_ranges"
+require_relative "vdc"
 
 module VCloudSdk
   class Network
@@ -21,8 +22,17 @@ module VCloudSdk
         ranges: ip_ranges.try(:ranges).to_a,
         name: name,
         href_id: entity_xml.href_id,
-        type: entity_xml.type
+        type: type,
+        vdc_id: vdc_id
       }
+    end
+
+    def type
+      entity_xml.type
+    end
+
+    def vdc_id
+      entity_xml.vdc_link.href_id if type == 'OrgNetwork'
     end
 
     def href
