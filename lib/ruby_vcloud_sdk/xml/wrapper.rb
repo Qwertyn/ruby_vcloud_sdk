@@ -125,7 +125,15 @@ module VCloudSdk
       end
 
       def owner_name
-        @root["ownerName"]
+        if (user_node = get_nodes('User').first)
+          user_node.name
+        else
+          @root["ownerName"]
+        end
+      end
+
+      def owner_identifier
+        get_nodes('User').first.try(:href_id)
       end
 
       def number_of_vms

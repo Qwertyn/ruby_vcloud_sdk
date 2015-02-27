@@ -172,6 +172,7 @@ module VCloudSdk
         :name                  => @link.name,
         :status                => @link.status,
         :owner_name            => @link.owner_name,
+        :owner_identifier      => @link.owner_identifier,
         :number_of_vms         => @link.number_of_vms,
         :cpu_allocation_mhz    => @link.cpu_allocation_mhz,
         :cpu_allocation_in_mhz => @link.cpu_allocation_in_mhz,
