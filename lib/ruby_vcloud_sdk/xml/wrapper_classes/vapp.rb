@@ -44,7 +44,17 @@ module VCloudSdk
       def vm(name)
         get_nodes("Vm", name: name).first
       end
-    end
 
+      def owner_identifier
+        get_nodes('User').first.try(:href_id)
+      end
+
+      def to_hash
+        { :href_id               => href_id,
+          :name                  => name,
+          # :status                => status,
+          :owner_identifier      => owner_identifier }
+      end
+    end
   end
 end

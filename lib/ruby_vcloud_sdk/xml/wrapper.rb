@@ -132,10 +132,6 @@ module VCloudSdk
         end
       end
 
-      def owner_identifier
-        get_nodes('User').first.try(:href_id)
-      end
-
       def number_of_vms
         @root["numberOfVMs"]
       end

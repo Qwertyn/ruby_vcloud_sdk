@@ -2,6 +2,7 @@ require "ruby_vcloud_sdk/xml/wrapper_classes/item"
 
 require "ruby_vcloud_sdk/xml/wrapper_classes/admin_catalog"
 require "ruby_vcloud_sdk/xml/wrapper_classes/admin_org"
+require "ruby_vcloud_sdk/xml/wrapper_classes/admin_vapp_record"
 require "ruby_vcloud_sdk/xml/wrapper_classes/allocated_ip_addresses"
 require "ruby_vcloud_sdk/xml/wrapper_classes/catalog_item"
 require "ruby_vcloud_sdk/xml/wrapper_classes/create_snapshot_params"

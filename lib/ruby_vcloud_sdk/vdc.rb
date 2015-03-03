@@ -17,18 +17,13 @@ module VCloudSdk
     extend Forwardable
     def_delegators :entity_xml,
                    :name, :upload_link, :upload_media_link,
-                   :instantiate_vapp_template_link
+                   :instantiate_vapp_template_link, :to_hash
 
     public :find_network_by_name, :network_exists?
 
     def initialize(session, link)
       @session = session
       @link = link
-    end
-
-    def to_hash
-      { href_id: @link.href_id,
-        name: name }
     end
 
     def storage_profiles

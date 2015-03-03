@@ -7,6 +7,9 @@ module VCloudSdk
   class VApp
     include Infrastructure
     include Powerable
+    extend Forwardable
+
+    def_delegators :entity_xml, :to_hash
 
     def initialize(session, link)
       @session = session
@@ -164,20 +167,6 @@ module VCloudSdk
                             Xml::MEDIA_TYPE[:VAPP])
       monitor_task(task)
       self
-    end
-
-    def to_hash
-      { :href_id               => @link.href_id,
-        :org_id                => @link.org_id,
-        :name                  => @link.name,
-        :status                => @link.status,
-        :owner_name            => @link.owner_name,
-        :owner_identifier      => @link.owner_identifier,
-        :number_of_vms         => @link.number_of_vms,
-        :cpu_allocation_mhz    => @link.cpu_allocation_mhz,
-        :cpu_allocation_in_mhz => @link.cpu_allocation_in_mhz,
-        :number_of_cpus        => @link.number_of_cpus,
-        :memory_allocation_mb  => @link.memory_allocation_mb }
     end
 
     def vdc
