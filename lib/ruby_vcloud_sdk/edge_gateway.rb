@@ -7,11 +7,15 @@ module VCloudSdk
     include Infrastructure
 
     extend Forwardable
-    def_delegator :entity_xml, :name
+    def_delegators :entity_xml, :name, :href_id
 
     def initialize(session, link)
       @session = session
       @link = link
+    end
+
+    def to_hash
+      { name: name, href_id: href_id }
     end
 
     def public_ip_ranges

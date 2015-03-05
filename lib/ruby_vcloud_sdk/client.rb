@@ -117,6 +117,11 @@ module VCloudSdk
       VCloudSdk::Network.new(@session, network.href)
     end
 
+    def edge_gateway(id)
+      edge_gateway = connection.get("/api/admin/edgeGateway/#{id}")
+      VCloudSdk::EdgeGateway.new(@session, edge_gateway)
+    end
+
     def entity(urn)
       connection.get("/api/entity/#{urn}")
     end
