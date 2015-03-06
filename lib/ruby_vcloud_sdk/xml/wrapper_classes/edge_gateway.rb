@@ -13,6 +13,10 @@ module VCloudSdk
       def vdc_link
         get_nodes(XML_TYPE[:LINK], { type: ADMIN_MEDIA_TYPE[:ADMIN_VDC], rel: 'up' }).first
       end
+
+      def description
+        get_nodes("Description").first
+      end
     end
   end
 end

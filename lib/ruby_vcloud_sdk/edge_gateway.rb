@@ -4,6 +4,12 @@ require_relative "ip_ranges"
 
 module VCloudSdk
   class EdgeGateway
+    STATUSES = {
+      "0"  => "NOT_READY",
+      "1"  => "READY",
+      "-1" => "ERROR"
+    }
+
     include Infrastructure
 
     extend Forwardable
@@ -16,8 +22,18 @@ module VCloudSdk
 
     def to_hash
       { name: name,
+        description: description,
+        status: status,
         href_id: href_id,
         vdc_href_id: vdc_href_id }
+    end
+
+    def description
+      entity_xml.description.content
+    end
+
+    def status
+      STATUSES[entity_xml.status]
     end
 
     def vdc_href_id
