@@ -8,6 +8,11 @@ module VCloudSdk
           .first
           .get_nodes(:GatewayInterface, nil, true)
       end
+
+
+      def vdc_link
+        get_nodes(XML_TYPE[:LINK], { type: ADMIN_MEDIA_TYPE[:ADMIN_VDC], rel: 'up' }).first
+      end
     end
   end
 end
