@@ -15,7 +15,7 @@ module VCloudSdk
     end
 
     def network_connection_index
-      @entity_xml.network_connection_index.to_i
+      @entity_xml.nic_index.to_i
     end
 
     def network_name
