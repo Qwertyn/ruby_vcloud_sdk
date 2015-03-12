@@ -24,7 +24,7 @@ module VCloudSdk
       vapp = entity_xml
       vapp_name = name
 
-      if is_status?(vapp, :POWERED_ON)
+      if is_status?(vapp, :POWERED_ON) || is_status?(vapp, :MIXED)
         fail CloudError,
              "vApp #{vapp_name} is powered on, power-off before deleting."
       end
