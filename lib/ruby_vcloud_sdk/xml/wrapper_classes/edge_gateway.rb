@@ -9,13 +9,18 @@ module VCloudSdk
           .get_nodes(:GatewayInterface, nil, true)
       end
 
-
       def vdc_link
         get_nodes(XML_TYPE[:LINK], { type: ADMIN_MEDIA_TYPE[:ADMIN_VDC], rel: 'up' }).first
       end
 
       def description
         get_nodes("Description").first
+      end
+
+      def firewall_service
+        get_nodes(:Configuration).first
+          .get_nodes(:EdgeGatewayServiceConfiguration).first
+          .get_nodes(:FirewallService).first
       end
     end
   end
