@@ -32,7 +32,7 @@ module VCloudSdk
       wait_for_running_tasks(vapp, "VApp #{vapp_name}")
 
       Config.logger.info "Deleting vApp #{vapp_name}."
-      monitor_task(connection.delete(vapp.remove_link.href),
+      monitor_task(connection.delete(vapp.href),
                    @session.time_limit[:delete_vapp]) do |task|
         Config.logger.info "vApp #{vapp_name} deleted."
         return
