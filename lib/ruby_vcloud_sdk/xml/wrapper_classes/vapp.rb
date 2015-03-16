@@ -50,10 +50,10 @@ module VCloudSdk
       end
 
       def to_hash
-        { :href_id               => href_id,
-          :name                  => name,
-          # :status                => status,
-          :owner_identifier      => owner_identifier }
+        { :href_id          => href_id,
+          :vdc_href_id      => vdc_link.href_id,
+          :name             => name,
+          :owner_identifier => owner_identifier }
       end
     end
   end
