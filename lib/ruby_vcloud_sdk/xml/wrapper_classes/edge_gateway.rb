@@ -22,6 +22,13 @@ module VCloudSdk
           .get_nodes(:EdgeGatewayServiceConfiguration).first
           .get_nodes(:FirewallService).first
       end
+
+      def firewall_rules
+        get_nodes(:Configuration).first
+          .get_nodes(:EdgeGatewayServiceConfiguration).first
+          .get_nodes(:FirewallService).first
+          .get_nodes(:FirewallRule)
+      end
     end
   end
 end
