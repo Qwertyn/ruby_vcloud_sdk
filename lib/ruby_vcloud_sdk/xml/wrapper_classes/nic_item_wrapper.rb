@@ -26,7 +26,7 @@ module VCloudSdk
       end
 
       def is_primary
-        connection["primaryNetworkConnection"]
+        connection["vcloud:primaryNetworkConnection"]
       end
 
       def is_primary=(value)

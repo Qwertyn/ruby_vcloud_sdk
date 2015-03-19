@@ -32,7 +32,7 @@ module VCloudSdk
         mac_address: mac_address,
         ip_address: ip_address,
         network_identifier: network.try(:href_id),
-        is_primary: @is_primary,
+        is_primary: is_primary,
         is_connected: is_connected
       }
     end
