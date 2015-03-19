@@ -297,12 +297,15 @@ module VCloudSdk
       self
     end
 
-    def delete_nics(*nics)
+    def delete_nic_by_name(name)
+      nic = nics.detect { |nic| nic.element_name == name }
+      fail ObjectNotFoundError, "NIC '#{name}' is not found" unless nic
+
       payload = entity_xml
       fail CloudError,
            "VM #{name} is powered-on and cannot delete NIC." if is_status?(payload, :POWERED_ON)
 
-      payload.delete_nics(*nics)
+      payload.delete_nics(nic)
       task = connection.post(payload.reconfigure_link.href,
                              payload,
                              Xml::MEDIA_TYPE[:VM])
