@@ -5,6 +5,7 @@ module VCloudSdk
 
       def to_hash
         {
+          id: get_nodes(:Id).first.content,
           enabled: is_enabled?,
           description: get_nodes(:Description).first.content,
           policy: get_nodes(:Policy).first.content,
