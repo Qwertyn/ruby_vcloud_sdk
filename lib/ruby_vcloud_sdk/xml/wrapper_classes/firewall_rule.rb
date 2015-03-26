@@ -46,8 +46,13 @@ module VCloudSdk
         get_nodes(:Policy).first.content = value
       end
 
-      def protocols=(value)
-        raise "NotImplemented"
+      def protocols=(values)
+        protocols_node = get_nodes(:Protocols).first.node
+        protocols_node.children.remove
+
+        values.each do |protocol|
+          add_child(protocol.capitalize, nil, nil, protocols_node).content = "true"
+        end
       end
 
       def destination_ip=(value)

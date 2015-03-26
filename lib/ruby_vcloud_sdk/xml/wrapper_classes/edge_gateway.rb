@@ -36,6 +36,16 @@ module VCloudSdk
           true).first
       end
 
+      def find_firewall_rule(id)
+        firewall_rules.each do |rule|
+          if rule.id == id.to_s
+            return rule
+          end
+        end
+
+        fail ObjectNotFoundError, "Firewall rule with id '#{id}' is not found"
+      end
+
       # Services configuration
 
       def add_firewall_rule(params)
@@ -46,13 +56,13 @@ module VCloudSdk
         add_child("IsEnabled", nil, nil, firewall_rule).content            = params[:is_enabled]
         add_child("Description", nil, nil, firewall_rule).content          = params[:description]
         add_child("Policy", nil, nil, firewall_rule).content               = params[:policy]
+        protocols_node = add_child("Protocols", nil, nil, firewall_rule)
         add_child("DestinationPortRange", nil, nil, firewall_rule).content = params[:destination_port_range]
         add_child("DestinationIp", nil, nil, firewall_rule).content        = params[:destination_ip]
         add_child("SourcePortRange", nil, nil, firewall_rule).content      = params[:source_port_range]
         add_child("SourceIp", nil, nil, firewall_rule).content             = params[:source_ip]
         add_child("EnableLogging", nil, nil, firewall_rule).content        = params[:enable_logging]
 
-        protocols_node = add_child("Protocols", nil, nil, firewall_rule)
         generate_protocols(params[:protocols], protocols_node)
       end
 
@@ -71,6 +81,16 @@ module VCloudSdk
         end
 
         false
+      end
+
+      def configure_firewall_rule(rule, params)
+        rule.is_enabled     = params[:is_enabled]
+        rule.description    = params[:description]
+        rule.policy         = params[:policy]
+        rule.protocols      = params[:protocols]
+        rule.destination_ip = params[:destination_ip]
+        rule.source_ip      = params[:source_ip]
+        rule.enable_logging = params[:enable_logging]
       end
     end
   end

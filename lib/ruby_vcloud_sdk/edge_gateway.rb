@@ -89,7 +89,7 @@ module VCloudSdk
     def delete_firewall_rule_by_id(id)
       payload = entity_xml
       unless payload.delete_firewall_rule?(id)
-        fail ObjectNotFoundError, "Firewall rule '#{id}' is not found"
+        fail ObjectNotFoundError, "Firewall rule with id '#{id}' is not found"
       end
 
       task = connection.post(payload.configure_services_link.href,
@@ -100,6 +100,36 @@ module VCloudSdk
       self
     end
 
+    # @param [Hash] params
+    # For example:
+    # params =
+    #   {
+    #     id: "1",
+    #     is_enabled: true,
+    #     description: "allow incomming ssh",
+    #     policy: "allow",
+    #     protocols: ["Tcp"],
+    #     destination_port_range: "22",
+    #     destination_ip: "Internal",
+    #     source_port_range: "Any",
+    #     source_ip: "External",
+    #     enable_logging: false
+    #   }
+    def update_firewall_rule(params)
+      payload = entity_xml
+      firewall_rule = payload.find_firewall_rule(params[:id])
+
+      payload.configure_firewall_rule(firewall_rule, params)
+
+      task = connection.post(payload.configure_services_link.href,
+        payload.service_configuration,
+        Xml::MEDIA_TYPE[:EDGE_GATEWAY_SERVICE_CONFIGURATION])
+
+      monitor_task(task)
+      self
+    end
+
+    # in test regime
     def configure_services(services)
       payload = entity_xml
 
@@ -111,10 +141,12 @@ module VCloudSdk
       self
     end
 
+    # in test regime
     def service_params(params)
       configure_firewall_service(params[:firewall_service])
     end
 
+    # in test regime
     def configure_firewall_service(params)
       firewall_service =  entity_xml.firewall_service
       firewall_service.is_enabled         = params[:is_enabled]
@@ -126,14 +158,5 @@ module VCloudSdk
       end
     end
 
-    def configure_firewall_rule(rule, params)
-      rule.is_enabled     = params[:is_enabled]
-      rule.description    = params[:description]
-      rule.policy         = params[:policy]
-      rule.protocols      = params[:protocols]
-      rule.destination_ip = params[:description_ip]
-      rule.source_ip      = params[:source_ip]
-      rule.enable_logging = params[:enable_logging]
-    end
   end
 end
