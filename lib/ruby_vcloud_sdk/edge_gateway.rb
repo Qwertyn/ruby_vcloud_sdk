@@ -55,6 +55,37 @@ module VCloudSdk
         end
     end
 
+
+    # @param [Hash] creation_params
+    # For example:
+    # creation_params =
+    #   {
+    #     is_enabled: true,
+    #     description: "allow incomming ssh",
+    #     policy: "allow",
+    #     protocols: ["Tcp"],
+    #     destination_port_range: "22",
+    #     destination_ip: "Internal",
+    #     source_port_range: "Any",
+    #     source_ip: "External",
+    #     enable_logging: false
+    #   }
+    def create_firewall_rule(creation_params)
+      Config
+        .logger
+        .info "Creating firewall_rule"
+
+      payload = entity_xml
+      payload.add_firewall_rule(creation_params)
+
+      task = connection.post(payload.configure_services_link.href,
+        payload.firewall_service,
+        Xml::MEDIA_TYPE[:EDGE_GATEWAY_SERVICE_CONFIGURATION])
+
+      monitor_task(task)
+      self
+    end
+
     def configure_services(services)
       payload = entity_xml
 
