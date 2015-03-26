@@ -61,6 +61,17 @@ module VCloudSdk
           add_child(protocol.capitalize, nil, nil, node).content = "true"
         end
       end
+
+      def delete_firewall_rule?(id)
+        firewall_rules.each do |rule|
+          if rule.id == id.to_s
+            rule.node.remove
+            return true
+          end
+        end
+
+        false
+      end
     end
   end
 end

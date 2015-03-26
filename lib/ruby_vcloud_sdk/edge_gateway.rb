@@ -79,7 +79,21 @@ module VCloudSdk
       payload.add_firewall_rule(creation_params)
 
       task = connection.post(payload.configure_services_link.href,
-        payload.firewall_service,
+        payload.service_configuration,
+        Xml::MEDIA_TYPE[:EDGE_GATEWAY_SERVICE_CONFIGURATION])
+
+      monitor_task(task)
+      self
+    end
+
+    def delete_firewall_rule_by_id(id)
+      payload = entity_xml
+      unless payload.delete_firewall_rule?(id)
+        fail ObjectNotFoundError, "Firewall rule '#{id}' is not found"
+      end
+
+      task = connection.post(payload.configure_services_link.href,
+        payload.service_configuration,
         Xml::MEDIA_TYPE[:EDGE_GATEWAY_SERVICE_CONFIGURATION])
 
       monitor_task(task)
