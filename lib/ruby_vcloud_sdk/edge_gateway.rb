@@ -54,5 +54,41 @@ module VCloudSdk
           result + IpRanges.new("#{i.start_address}-#{i.end_address}")
         end
     end
+
+    def configure_services(services)
+      payload = entity_xml
+
+      task = connection.post(payload.configure_services_link.href,
+        service_params(services),
+        Xml::MEDIA_TYPE[:EDGE_GATEWAY_SERVICE_CONFIGURATION])
+
+      monitor_task(task)
+      self
+    end
+
+    def service_params(params)
+      configure_firewall_service(params[:firewall_service])
+    end
+
+    def configure_firewall_service(params)
+      firewall_service =  entity_xml.firewall_service
+      firewall_service.is_enabled         = params[:is_enabled]
+      firewall_service.default_action     = params[:default_action]
+      firewall_service.log_default_action = params[:log_default_action]
+      firewall_rules = entity_xml.firewall_rules
+      firewall_rules.zip(params[:firewall_rules]).each do |firewall_rule, param|
+        configure_firewall_rule(firewall_rule, param)
+      end
+    end
+
+    def configure_firewall_rule(rule, params)
+      rule.is_enabled     = params[:is_enabled]
+      rule.description    = params[:description]
+      rule.policy         = params[:policy]
+      rule.protocols      = params[:protocols]
+      rule.destination_ip = params[:description_ip]
+      rule.source_ip      = params[:source_ip]
+      rule.enable_logging = params[:enable_logging]
+    end
   end
 end

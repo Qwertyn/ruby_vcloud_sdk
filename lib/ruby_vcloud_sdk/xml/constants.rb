@@ -190,7 +190,9 @@ module VCloudSdk
         :RASD_ITEM => "application/vnd.vmware.vcloud.rasdItem+xml",
         :RASD_ITEMS_LIST => "application/vnd.vmware.vcloud.rasdItemsList+xml",
         :OVF => "text/xml",
-        :APPLICATION_XML => "application/*+xml"
+        :APPLICATION_XML => "application/*+xml",
+        :EDGE_GATEWAY_SERVICE_CONFIGURATION =>
+          "application/vnd.vmware.admin.edgeGatewayServiceConfiguration+xml"
     }
 
     ADMIN_MEDIA_TYPE = {

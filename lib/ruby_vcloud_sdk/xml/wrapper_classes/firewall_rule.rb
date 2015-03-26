@@ -24,9 +24,37 @@ module VCloudSdk
       def protocols
         protocols = []
         PROTOCOLS.each do |protocol|
-          protocols.push(protocol.downcase) unless get_nodes(protocol).empty?
+          protocols << protocol unless get_nodes(protocol).empty?
         end
         protocols
+      end
+
+      def is_enabled=(value)
+        get_nodes(:IsEnabled).first.content = value
+      end
+
+      def description=(desc)
+        get_nodes(:Description).first.content = desc
+      end
+
+      def policy=(value)
+        get_nodes(:Policy).first.content = value
+      end
+
+      def protocols=(value)
+        raise "NotImplemented"
+      end
+
+      def destination_ip=(value)
+        get_nodes(:DestinationIp).first.content = value
+      end
+
+      def source_ip=(value)
+        get_nodes(:SourceIp).first.content = value
+      end
+
+      def enable_logging=(value)
+        get_nodes(:EnableLogging).first.content = value
       end
     end
   end

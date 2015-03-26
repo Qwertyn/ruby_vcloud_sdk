@@ -18,16 +18,25 @@ module VCloudSdk
       end
 
       def firewall_service
-        get_nodes(:Configuration).first
-          .get_nodes(:EdgeGatewayServiceConfiguration).first
+        service_configuration
           .get_nodes(:FirewallService).first
       end
 
       def firewall_rules
-        get_nodes(:Configuration).first
-          .get_nodes(:EdgeGatewayServiceConfiguration).first
+        service_configuration
           .get_nodes(:FirewallService).first
           .get_nodes(:FirewallRule)
+      end
+
+      def service_configuration
+        get_nodes(:Configuration).first
+          .get_nodes(:EdgeGatewayServiceConfiguration).first
+      end
+
+      def configure_services_link
+        get_nodes(XML_TYPE[:LINK],
+          { rel: "edgeGateway:configureServices" },
+          true).first
       end
     end
   end
