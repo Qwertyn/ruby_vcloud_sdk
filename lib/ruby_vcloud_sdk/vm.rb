@@ -31,6 +31,7 @@ module VCloudSdk
         status: status,
         memory: memory,
         vcpu: vcpu,
+        cores_per_socket: cores_per_socket,
         primary_network_connection_ip_address: ip_address,
         computer_name: guest_customization_section.computer_name }
     end
@@ -85,7 +86,7 @@ module VCloudSdk
               .get_rasd_content(Xml::RASD_TYPES[:VIRTUAL_QUANTITY])
 
       fail CloudError,
-           "Uable to retrieve number of virtual cpus of VM #{name}" if cpus.nil?
+           "Unable to retrieve number of virtual cpus of VM #{name}" if cpus.nil?
       cpus.to_i
     end
 
@@ -104,6 +105,35 @@ module VCloudSdk
       task = connection.post(payload.reconfigure_link.href,
                              payload,
                              Xml::MEDIA_TYPE[:VM])
+      monitor_task(task)
+      self
+    end
+
+    def cores_per_socket
+      cps = entity_xml
+                .hardware_section
+                .cpu
+                .get_vmw(Xml::VMW_TYPES[:CORES_PER_SOCKET]).content
+
+      fail CloudError,
+        "Unable to retrieve cores per socket of VM #{name}" if cps.nil?
+      cps.to_i
+    end
+
+    def cores_per_socket=(cps)
+      fail(CloudError,
+        "Invalid virtual CPU count #{cps}") if cps <= 0
+
+      Config
+        .logger
+        .info "Changing the virtual cores per socket to #{cps}."
+
+      payload = entity_xml
+      payload.change_cores_per_socket(cps)
+
+      task = connection.post(payload.reconfigure_link.href,
+        payload,
+        Xml::MEDIA_TYPE[:VM])
       monitor_task(task)
       self
     end

@@ -33,6 +33,10 @@ module VCloudSdk
         :VIRTUAL_QUANTITY => "VirtualQuantity"
     }
 
+    VMW_TYPES = {
+      :CORES_PER_SOCKET => "CoresPerSocket"
+    }
+
     RESOURCE_SUB_TYPE = {
         :VMXNET3 => "VMXNET3"
     }
