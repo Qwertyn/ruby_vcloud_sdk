@@ -10,11 +10,16 @@ module VCloudSdk
       end
 
       def vdc_link
+        get_nodes(XML_TYPE[:LINK], { type: MEDIA_TYPE[:VDC], rel: 'up' }).first ||
         get_nodes(XML_TYPE[:LINK], { type: ADMIN_MEDIA_TYPE[:ADMIN_VDC], rel: 'up' }).first
       end
 
       def description
         get_nodes("Description").first
+      end
+
+      def vdc_href_id
+        get_nodes("").first
       end
 
       def service_configuration
@@ -57,13 +62,12 @@ module VCloudSdk
         add_child("Description", nil, nil, firewall_rule).content          = params[:description]
         add_child("Policy", nil, nil, firewall_rule).content               = params[:policy]
         protocols_node = add_child("Protocols", nil, nil, firewall_rule)
+        generate_protocols(params[:protocols], protocols_node)
         add_child("DestinationPortRange", nil, nil, firewall_rule).content = params[:destination_port_range]
         add_child("DestinationIp", nil, nil, firewall_rule).content        = params[:destination_ip]
         add_child("SourcePortRange", nil, nil, firewall_rule).content      = params[:source_port_range]
         add_child("SourceIp", nil, nil, firewall_rule).content             = params[:source_ip]
         add_child("EnableLogging", nil, nil, firewall_rule).content        = params[:enable_logging]
-
-        generate_protocols(params[:protocols], protocols_node)
       end
 
       def generate_protocols(protocols, node)
@@ -81,6 +85,14 @@ module VCloudSdk
         end
 
         false
+      end
+
+      def to_hash
+        { name: name,
+          description: description,
+          status: status,
+          href_id: href_id,
+          vdc_href_id: vdc_link.href_id }
       end
 
       def configure_firewall_rule(rule, params)
