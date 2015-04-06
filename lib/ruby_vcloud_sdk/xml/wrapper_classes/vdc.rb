@@ -1,6 +1,10 @@
 module VCloudSdk
   module Xml
     class Vdc < Wrapper
+      def to_hash
+        { href_id: href_id, name: name }
+      end
+
       def add_disk_link
         get_nodes(XML_TYPE[:LINK],
                   type: MEDIA_TYPE[:DISK_CREATE_PARAMS])
