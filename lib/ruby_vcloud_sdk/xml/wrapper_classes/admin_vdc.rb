@@ -5,6 +5,10 @@ module VCloudSdk
         get_nodes("Network", type: ADMIN_MEDIA_TYPE[:ADMIN_NETWORK])
       end
 
+      def vapps
+        get_nodes(XML_TYPE[:RESOURCEENTITY], type: MEDIA_TYPE[:VAPP])
+      end
+
       def edge_gateways_link
         get_nodes(XML_TYPE[:LINK],
                   rel: "edgeGateways")
