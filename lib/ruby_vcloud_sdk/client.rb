@@ -107,6 +107,11 @@ module VCloudSdk
       VCloudSdk::VApp.new(@session, vapp)
     end
 
+    def catalog(id)
+      catalog = connection.get("/api/admin/catalog/#{id}")
+      VCloudSdk::Catalog.new(@session, catalog)
+    end
+
     def vapp_template(id)
       vapp_template = connection.get("/api/vAppTemplate/#{id}")
       VCloudSdk::VappTemplate.new(@session, vapp_template)

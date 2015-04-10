@@ -6,6 +6,9 @@ require_relative "catalog_item"
 module VCloudSdk
   class Catalog
     include Infrastructure
+    extend Forwardable
+
+    def_delegators :entity_xml, :user_group_link
 
     def initialize(session, link)
       @session = session
@@ -14,7 +17,8 @@ module VCloudSdk
 
     def to_hash
       { id: id,
-        name: name }
+        name: name,
+        user_group_href_id: user_group_link.href_id}
     end
 
     def name

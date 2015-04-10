@@ -6,6 +6,10 @@ module VCloudSdk
         get_nodes("Description").first
       end
 
+      def user_group_link
+        get_nodes(XML_TYPE[:LINK], {"rel" => "up"}, true).first
+      end
+
       def description=(desc)
         description.content = desc
       end
