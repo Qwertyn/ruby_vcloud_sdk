@@ -120,7 +120,7 @@ module VCloudSdk
 
       # hardware modification methods
 
-      def add_hard_disk(capacity, bus_type, bus_sub_type)
+      def add_hard_disk(capacity, bus_type, bus_sub_type, sp_href)
         section = hardware_section
         # Create a RASD item
         new_disk = WrapperFactory
@@ -141,6 +141,10 @@ module VCloudSdk
           "busSubType", VCLOUD_NAMESPACE)] = bus_sub_type
         host_resource[new_disk.create_qualified_name(
           "busType", VCLOUD_NAMESPACE)] = bus_type
+        host_resource[new_disk.create_qualified_name(
+            "storageProfileOverrideVmDefault", VCLOUD_NAMESPACE)] = true
+        host_resource[new_disk.create_qualified_name(
+            "storageProfileHref", VCLOUD_NAMESPACE)] = sp_href
       end
 
       def delete_hard_disk?(disk_name)

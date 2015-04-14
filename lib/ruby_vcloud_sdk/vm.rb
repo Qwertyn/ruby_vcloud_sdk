@@ -374,6 +374,7 @@ module VCloudSdk
 
     def create_internal_disk(
           capacity,
+          sp_href = self.storage_profile.href,
           bus_type = "scsi",
           bus_sub_type = "lsilogic")
 
@@ -388,12 +389,14 @@ module VCloudSdk
       fail(CloudError,
            "Invalid bus sub type!") unless bus_sub_type
 
+      fail(CloudError,
+        "Invalid storage profile id!") unless sp_href
       Config
         .logger
         .info "Creating internal disk #{name} of #{capacity}MB."
 
       payload = entity_xml
-      payload.add_hard_disk(capacity, bus_type, bus_sub_type)
+      payload.add_hard_disk(capacity, bus_type, bus_sub_type, sp_href)
 
       task = connection.post(payload.reconfigure_link.href,
                              payload,
