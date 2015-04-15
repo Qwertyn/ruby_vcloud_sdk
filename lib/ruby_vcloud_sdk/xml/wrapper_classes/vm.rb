@@ -162,12 +162,22 @@ module VCloudSdk
         @logger.debug("Updating disk size on vm #{name} to #{mb} MB")
         hardware_section.hard_disks.each do |disk|
           if disk.element_name == disk_name
-            if disk.host_resource['vcloud:capacity'].to_i >= mb
+            if disk.host_resource['vcloud:capacity'].to_i > mb
               fail(CloudError,
                 'Virtual machine disk sizes may only be increased, not decreased.')
             end
 
             disk.host_resource['vcloud:capacity'] = mb
+          end
+        end
+      end
+
+      def change_storage_profile(disk_name, sp_href)
+        hardware_section.hard_disks.each do |disk|
+          if disk.element_name == disk_name
+            disk.host_resource[disk.create_qualified_name(
+                "storageProfileOverrideVmDefault", VCLOUD_NAMESPACE)] = true
+            disk.host_resource['vcloud:storageProfileHref'] = sp_href
           end
         end
       end
