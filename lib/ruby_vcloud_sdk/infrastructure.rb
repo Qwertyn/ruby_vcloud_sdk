@@ -15,10 +15,9 @@ module VCloudSdk
     end
 
     def vapps
-      vapps_link = @session.query_list.vapps_query_list
-      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+      path = "/api/query?type=adminVApp&filter=(isExpired!=true)"
 
-      query_list.vapps.map do |vapp_link|
+      connection.get(path).vapps.map do |vapp_link|
         VCloudSdk::VApp.new(@session, vapp_link)
       end
     end
