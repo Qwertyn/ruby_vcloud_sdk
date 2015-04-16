@@ -419,17 +419,20 @@ module VCloudSdk
       self
     end
 
-    def update_internal_disk_by_name(name, capacity, sp_href = nil)
-      fail(CloudError,
-       "Invalid size in MB #{capacity}") if capacity <= 0
-
-      Config
-        .logger
-        .info "Creating internal disk #{name} of #{capacity}MB."
-
+    def update_internal_disk_by_name(name: '', capacity: nil, sp_href: nil)
       payload = entity_xml
       payload.change_storage_profile(name, sp_href) if sp_href
-      payload.change_disk_size(name, capacity)
+
+      if capacity
+        fail(CloudError,
+          "Invalid size in MB #{capacity}") if capacity <= 0
+
+        Config
+          .logger
+          .info "Creating internal disk #{name} of #{capacity}MB."
+
+        payload.change_disk_size(name, capacity)
+      end
 
       task = connection.post(
         payload.reconfigure_link.href,
