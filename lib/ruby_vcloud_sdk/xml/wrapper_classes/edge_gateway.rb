@@ -89,7 +89,7 @@ module VCloudSdk
 
       def to_hash
         { name: name,
-          description: description,
+          description: description.content,
           status: status,
           href_id: href_id,
           vdc_href_id: vdc_link.href_id }
