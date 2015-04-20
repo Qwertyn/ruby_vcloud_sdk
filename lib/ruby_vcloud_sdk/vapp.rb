@@ -9,7 +9,7 @@ module VCloudSdk
     include Powerable
     extend Forwardable
 
-    def_delegators :entity_xml, :to_hash
+    def_delegators :entity_xml, :to_hash, :storage_lease_expiration
 
     def initialize(session, link)
       @session = session
