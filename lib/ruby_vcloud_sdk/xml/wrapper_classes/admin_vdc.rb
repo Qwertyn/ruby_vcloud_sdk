@@ -18,8 +18,13 @@ module VCloudSdk
       def to_hash
         {
           href_id: href_id,
-          name: name
+          name: name,
+          fast_provisioning: fast_provisioning?
         }
+      end
+
+      def fast_provisioning?
+        get_nodes(XML_TYPE[:USESFASTPROVISIONING]).first.content.to_bool
       end
     end
   end

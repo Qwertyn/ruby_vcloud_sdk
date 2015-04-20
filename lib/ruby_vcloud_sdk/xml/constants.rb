@@ -398,6 +398,7 @@ module VCloudSdk
       :USERRECORD => "UserRecord",
       :USERREFERENCE => "UserReference",
       :USERREFERENCES => "UserReferences",
+      :USESFASTPROVISIONING => "UsesFastProvisioning",
       :VAPP => "VApp",
       :VAPPLEASESETTINGS => "VAppLeaseSettings",
       :VAPPNETWORK => "VAppNetwork",
