@@ -10,6 +10,10 @@ module VCloudSdk
         get_nodes(XML_TYPE[:LINK], {"rel" => "up"}, true).first
       end
 
+      def published?
+        get_nodes("IsPublished").first.content == "true"
+      end
+
       def description=(desc)
         description.content = desc
       end

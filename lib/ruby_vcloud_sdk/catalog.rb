@@ -8,7 +8,7 @@ module VCloudSdk
     include Infrastructure
     extend Forwardable
 
-    def_delegators :entity_xml, :user_group_link
+    def_delegators :entity_xml, :user_group_link, :published?
 
     def initialize(session, link)
       @session = session
@@ -18,7 +18,9 @@ module VCloudSdk
     def to_hash
       { id: id,
         name: name,
-        user_group_href_id: user_group_link.href_id}
+        user_group_href_id: user_group_link.href_id,
+        published: published?
+      }
     end
 
     def name
