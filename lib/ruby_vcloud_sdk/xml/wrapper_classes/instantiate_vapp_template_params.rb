@@ -57,14 +57,26 @@ module VCloudSdk
             parent.node.remove if parent
           end
           values['hard_disks'].each do |disk, disk_params|
-            disk.host_resource['vcloud:storageProfileHref'] = disk_params['storage_policy']
-            disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
+            if disk_params['storage_policy']
+              disk.host_resource['vcloud:storageProfileHref'] = disk_params['storage_policy']
+              disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
+            end
             disk.host_resource['vcloud:capacity'] = disk_params['disk_space']
           end
           vm.change_cpu_count(values['vcpu_per_vm'])
           vm.change_cores_per_socket(values['core_per_socket'])
           vm.change_memory(values['memory'])
           instantiation_params.add_child(vm.hardware_section.node.clone)
+          if values['storage_policy']
+            storage_profile = values['storage_policy']
+            node_st = create_child('StorageProfile',
+              namespace.prefix,
+              namespace.href)
+            node_st['type'] = storage_profile.type
+            node_st['name'] = storage_profile.name
+            node_st['href'] = storage_profile.href
+            instantiation_params.after(node_st)
+          end
           node_sourced_item.after(all_eulas_accepted.node)
         end
       end

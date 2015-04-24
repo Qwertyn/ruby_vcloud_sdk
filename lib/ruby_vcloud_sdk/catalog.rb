@@ -367,8 +367,11 @@ module VCloudSdk
 
       vapp_template.vms.each do |vm|
         source[vm] = {}
+        vm_param = vm_params[vm.href_id]
+        if vm_param['storage_policy']
+          vm_param['storage_policy'] = connection.get(vm_param['storage_policy'])
+        end
         vm.hardware_section.hard_disks.each do |disk|
-          vm_param = vm_params[vm.href_id]
           vm_param['hard_disks'][disk] = vm_param['hard_disks'].delete disk.element_name
           source[vm] = vm_param
         end
