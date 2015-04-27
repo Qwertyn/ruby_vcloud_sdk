@@ -215,7 +215,7 @@ module VCloudSdk
     end
 
     def entity_xml
-      connection.get(@link)
+      @entity_xml ||= connection.get(@link)
     end
 
     def wait_for_running_tasks(subject, subject_display)
