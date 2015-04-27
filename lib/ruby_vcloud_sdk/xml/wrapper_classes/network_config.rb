@@ -21,6 +21,16 @@ module VCloudSdk
       def fence_mode=(value)
         get_nodes("FenceMode").first.content = value
       end
+
+      def id
+        get_nodes("Link").first.href[/.{8}-.{4}-.{4}-.{4}-.{12}/]
+      end
+
+      def link
+        link = get_nodes("Link").first
+        return unless link
+        link.href[/https.*.{8}-.{4}-.{4}-.{4}-.{12}/]
+      end
     end
 
   end

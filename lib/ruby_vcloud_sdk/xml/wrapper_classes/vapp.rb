@@ -5,8 +5,18 @@ module VCloudSdk
         get_nodes("Description").first.content
       end
 
+      def networks
+        get_nodes(XML_TYPE[:LINK], type: MEDIA_TYPE[:VAPP_NETWORK])
+      end
+
       def network_config_section
         get_nodes("NetworkConfigSection").first
+      end
+
+      def storage_lease_expiration
+        sle = get_nodes("StorageLeaseExpiration").first.try(:content)
+        return if sle.nil? || sle == "0"
+        Time.zone.parse(sle)
       end
 
       def reboot_link
@@ -40,7 +50,19 @@ module VCloudSdk
       def vm(name)
         get_nodes("Vm", name: name).first
       end
-    end
 
+      def owner_identifier
+        get_nodes('User').first.try(:href_id)
+      end
+
+      def to_hash
+        { :href_id                  => href_id,
+          :vdc_href_id              => vdc_link.href_id,
+          :name                     => name,
+          :owner_identifier         => owner_identifier,
+          :storage_lease_expiration => storage_lease_expiration
+        }
+      end
+    end
   end
 end

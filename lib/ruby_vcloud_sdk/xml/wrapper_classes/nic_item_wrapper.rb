@@ -26,13 +26,21 @@ module VCloudSdk
       end
 
       def is_primary
-        connection["primaryNetworkConnection"]
+        connection["vcloud:primaryNetworkConnection"]
       end
 
       def is_primary=(value)
         primary_attr = create_qualified_name("primaryNetworkConnection",
           VCLOUD_NAMESPACE)
         connection[primary_attr] = value.to_s
+      end
+
+      def ip_address
+        connection["vcloud:ipAddress"]
+      end
+
+      def is_connected
+        connection.content != "none"
       end
 
       def nic_index
@@ -76,6 +84,10 @@ module VCloudSdk
 
       def network=(value)
         connection.content = value
+      end
+
+      def element_name
+        get_rasd_content(RASD_TYPES[:ELEMENT_NAME])
       end
 
       private

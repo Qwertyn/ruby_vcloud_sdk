@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name         = "ruby_vcloud_sdk"
-  s.version      = "0.7.2"
+  s.version      = "0.15.0"
   s.platform     = Gem::Platform::RUBY
   s.summary      = "BOSH vCloud API client"
   s.description  = "BOSH vCloud API client\n#{`git rev-parse HEAD`[0, 6]}"
@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.files        = `git ls-files -- lib/*`.split("\n") + %w(README.md)
   s.require_path = "lib"
 
-  s.add_dependency "builder", ">= 3.1"
-  s.add_dependency "httpclient", ">= 2.4.0"
-  s.add_dependency "rest-client", ">= 1.6.7"
-  s.add_dependency "nokogiri", ">= 1.5.6"
+  s.add_dependency "builder", "~>3.0.0"
+  s.add_dependency "httpclient", "= 2.2.4"
+  s.add_dependency "rest-client", "~>1.6.7"
+  s.add_dependency "nokogiri", ">=1.5.6"
   s.add_dependency "netaddr"
 end

@@ -1,6 +1,10 @@
 module VCloudSdk
   module Xml
     class Vdc < Wrapper
+      def to_hash
+        { href_id: href_id, name: name }
+      end
+
       def add_disk_link
         get_nodes(XML_TYPE[:LINK],
                   type: MEDIA_TYPE[:DISK_CREATE_PARAMS])
@@ -44,6 +48,12 @@ module VCloudSdk
         get_nodes(XML_TYPE[:LINK],
                   rel: "edgeGateways")
                   .first
+      end
+
+      def org_link
+        get_nodes(XML_TYPE[:LINK],
+                  { type: MEDIA_TYPE[:ORGANIZATION] },
+                  true).first
       end
 
       # vApp Template names are not unique so multiple ones can be returned.

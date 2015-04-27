@@ -17,7 +17,7 @@ module VCloudSdk
     extend Forwardable
     def_delegators :entity_xml,
                    :name, :upload_link, :upload_media_link,
-                   :instantiate_vapp_template_link
+                   :instantiate_vapp_template_link, :to_hash
 
     public :find_network_by_name, :network_exists?
 
@@ -89,7 +89,7 @@ module VCloudSdk
     end
 
     def networks
-      @session.org.networks.map do |network_link|
+      entity_xml.available_networks.map do |network_link|
         VCloudSdk::Network.new(@session, network_link)
       end
     end
@@ -209,12 +209,21 @@ module VCloudSdk
       storage_profile
     end
 
+    def org
+      VCloudSdk::Organization.new(@session, entity_xml.org_link)
+    end
+
     private
 
     def storage_profile_records
-      connection
+      records = connection
         .get("/api/query?type=orgVdcStorageProfile&filter=vdcName==#{URI.encode(name)}")
         .org_vdc_storage_profile_records
+      records = connection
+          .get("/api/query?type=adminOrgVdcStorageProfile&filter=vdcName==#{URI.encode(name)}")
+          .org_vdc_storage_profile_records if records.empty?
+
+      records
     end
 
     def disk_create_params(name, capacity, bus_type, bus_sub_type, vm)

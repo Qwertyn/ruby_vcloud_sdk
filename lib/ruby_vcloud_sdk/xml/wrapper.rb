@@ -103,12 +103,53 @@ module VCloudSdk
         URI.parse(href).path.split('/')[-1]
       end
 
+      def org
+        @root["org"]
+      end
+
+      def org_id
+        return unless org
+        URI.parse(org).path.split('/')[-1]
+      end
+
       def name
         @root["name"]
       end
 
       def name=(name)
         @root["name"] = name
+      end
+
+      def status
+        @root["status"]
+      end
+
+      def owner_name
+        if (user_node = get_nodes('User').first)
+          user_node.name
+        else
+          @root["ownerName"]
+        end
+      end
+
+      def number_of_vms
+        @root["numberOfVMs"]
+      end
+
+      def cpu_allocation_mhz
+        @root["cpuAllocationMhz"]
+      end
+
+      def cpu_allocation_in_mhz
+        @root["cpuAllocationInMhz"]
+      end
+
+      def number_of_cpus
+        @root["numberOfCpus"]
+      end
+
+      def memory_allocation_mb
+        @root["memoryAllocationMB"]
       end
 
       def urn
@@ -156,6 +197,10 @@ module VCloudSdk
       def running_tasks
         get_nodes(XML_TYPE[:TASK],
                   { status: TASK_STATUS[:RUNNING] })
+      end
+
+      def ip_scope
+        get_nodes(:IpScope).first
       end
 
       def create_xpath_query(type_name, attrs = nil, only_immediate = false,

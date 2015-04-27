@@ -6,10 +6,21 @@ require_relative "catalog_item"
 module VCloudSdk
   class Catalog
     include Infrastructure
+    extend Forwardable
+
+    def_delegators :entity_xml, :user_group_link, :published?
 
     def initialize(session, link)
       @session = session
       @link = link
+    end
+
+    def to_hash
+      { id: id,
+        name: name,
+        user_group_href_id: user_group_link.href_id,
+        published: published?
+      }
     end
 
     def name
@@ -137,24 +148,25 @@ module VCloudSdk
     end
 
     def instantiate_vapp_template(template_name, vdc_name, vapp_name,
-        description = nil, disk_locality = nil, network_config = nil)
+        description = nil, disk_locality = nil, network_config = nil, virtual_machine_params = nil)
 
       instantiate_vapp_params = create_instantiate_vapp_params(
-          template_name, vapp_name, description, disk_locality, network_config)
+          template_name, vapp_name, description, disk_locality, network_config, virtual_machine_params)
 
       vdc = find_vdc_by_name vdc_name
 
       vapp = connection.post(vdc.instantiate_vapp_template_link,
                              instantiate_vapp_params)
-      vapp.running_tasks.each do |task|
-        begin
-          monitor_task(task, @session.time_limit[:instantiate_vapp_template])
-        rescue ApiError => e
-          Config.logger.error(e, "Instantiate vApp template #{vapp_name} " +
-              "failed. Task #{task.operation} did not complete successfully.")
-          raise e
-        end
-      end
+
+      # vapp.running_tasks.each do |task|
+      #   begin
+      #     monitor_task(task, @session.time_limit[:instantiate_vapp_template])
+      #   rescue ApiError => e
+      #     Config.logger.error(e, "Instantiate vApp template #{vapp_name} " +
+      #         "failed. Task #{task.operation} did not complete successfully.")
+      #     raise e
+      #   end
+      # end
 
       vdc = find_vdc_by_name vdc_name # Refresh information about vdc
       vdc.find_vapp_by_name vapp_name
@@ -329,8 +341,9 @@ module VCloudSdk
       connection.get(vapp_template.href)
     end
 
+    # @param [Hash] vm_params = { 'vm-id' => {'name'=> 'VMName', 'vcpu_per_vm' => '2', 'core_per_socket' => '2', 'memory' => '1024','hard_disks' => {'Hard disk 1' => {'storage_policy' => "http://myhost.com", 'disk_space' => '1024'}} }
     def create_instantiate_vapp_params(template_name,
-        vapp_name, description, disk_locality, network_config)
+      vapp_name, description, disk_locality, network_config, vm_params)
 
       source_vapp_template = retrieve_vapp_template_xml_node(template_name)
 
@@ -344,23 +357,49 @@ module VCloudSdk
       instantiate_vapp_params.source = source_vapp_template
       instantiate_vapp_params.all_eulas_accepted = true
       instantiate_vapp_params.linked_clone = false
-      instantiate_vapp_params.set_locality = locality_spec(
-          source_vapp_template, disk_locality)
+      instantiate_vapp_params.set_source_item = source_spec(source_vapp_template, vm_params)
 
       instantiate_vapp_params
     end
 
-    def locality_spec(vapp_template, disk_locality)
-      disk_locality ||= []
-      locality = {}
-      disk_locality.each do |disk|
-        current_disk = connection.get(disk)
-        unless current_disk
-          Config.logger.info "Disk #{disk.name} no longer exists."
-          next
+    def source_spec(vapp_template, vm_params)
+      source = {}
+
+      vapp_template.vms.each do |vm|
+        source[vm] = {}
+        vm_param = vm_params[vm.href_id]
+        if vm_param['storage_policy']
+          vm_param['storage_policy'] = connection.get(vm_param['storage_policy'])
         end
-        vapp_template.vms.each do |vm|
-          locality[vm] = current_disk
+        vm.hardware_section.hard_disks.each do |disk|
+          vm_param['hard_disks'][disk] = vm_param['hard_disks'].delete disk.element_name
+          source[vm] = vm_param
+        end
+      end
+      source
+    end
+
+    def locality_spec(vapp_template, disk_locality, storage_profile_pair)
+      locality = {}
+
+      disk = if disk_locality
+               current_disk = connection.get(disk_locality)
+               Config.logger.info "Disk #{disk.name} no longer exists." unless current_disk
+               current_disk
+             end
+
+      vapp_template.vms.each do |vm|
+        sp = storage_profile_pair[vm.href_id]
+        storage_profile = if sp
+                           current_storage_profile = connection.get(sp)
+                           Config.logger.info "StorageProfile #{sp.name} no longer exists." unless current_storage_profile
+                           current_storage_profile
+                          end
+
+        params = [disk, storage_profile]
+
+        unless params.compact.empty?
+          locality[vm] = params
         end
       end
       locality
@@ -389,7 +428,7 @@ module VCloudSdk
 
       network = find_network_by_name(network_config.network_name)
       target_vapp_net_name = network_config.vapp_net_name.nil? ?
-                             network.name : network_config.vapp_net_name
+                             network_config.network_name : network_config.vapp_net_name
 
       instantiate_vapp_params.set_network_config(target_vapp_net_name,
                                                  network.href["href"].to_s,

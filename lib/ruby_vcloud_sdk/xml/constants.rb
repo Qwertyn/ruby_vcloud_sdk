@@ -1,11 +1,14 @@
 module VCloudSdk
   module Xml
     VCLOUD_NAMESPACE = "http://www.vmware.com/vcloud/v1.5"
+    VMEXT_NAMESPACE = 'http://www.vmware.com/vcloud/extension/v1.5'
 
     OVF = "http://schemas.dmtf.org/ovf/envelope/1"
 
     RASD = "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/" +
            "CIM_ResourceAllocationSettingData"
+
+    VMW = "http://www.vmware.com/schema/ovf"
 
     # http://blogs.vmware.com/vapp/2009/11/virtual-hardware-in-ovf-part-1.html
     HARDWARE_TYPE = {
@@ -28,6 +31,10 @@ module VCloudSdk
         :ELEMENT_NAME => "ElementName",
         :ALLOCATION_UNITS => "AllocationUnits",
         :VIRTUAL_QUANTITY => "VirtualQuantity"
+    }
+
+    VMW_TYPES = {
+      :CORES_PER_SOCKET => "CoresPerSocket"
     }
 
     RESOURCE_SUB_TYPE = {
@@ -87,6 +94,7 @@ module VCloudSdk
         :ORGANIZATION => "application/vnd.vmware.vcloud.org+xml",
         :ORGANIZATION_LIST => "application/vnd.vmware.vcloud.orgList+xml",
         :VDC => "application/vnd.vmware.vcloud.vdc+xml",
+        :VCLOUD => "application/vnd.vmware.admin.vcloud+xml",
         :UPLOAD_VAPP_TEMPLATE_PARAMS =>
           "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml",
         :INSTANTIATE_OVF_PARAMS =>
@@ -163,6 +171,8 @@ module VCloudSdk
           "application/vnd.vmware.vcloud.networkSection+xml",
         :NETWORK_CONFIG_SECTION =>
           "application/vnd.vmware.vcloud.networkConfigSection+xml",
+        :NETWORK_CARD_SECTION =>
+          "application/vnd.vmware.vcloud.networkConfigSection+xml",
         :PRODUCT_SECTIONS =>
           "application/vnd.vmware.vcloud.productSections+xml",
         :NETWORK_CONNECTION_SECTION =>
@@ -177,10 +187,16 @@ module VCloudSdk
           "application/vnd.vmware.vcloud.guestCustomizationSection+xml",
         :CUSTOMIZATION_SECTION =>
           "application/vnd.vmware.vcloud.customizationSection+xml",
+        :SNAPSHOT_SECTION =>
+          "application/vnd.vmware.vcloud.snapshotSection+xml",
+        :SNAPSHOT_CREATE_PARAMS =>
+          "application/vnd.vmware.vcloud.createSnapshotParams+xml",
         :RASD_ITEM => "application/vnd.vmware.vcloud.rasdItem+xml",
         :RASD_ITEMS_LIST => "application/vnd.vmware.vcloud.rasdItemsList+xml",
         :OVF => "text/xml",
-        :APPLICATION_XML => "application/*+xml"
+        :APPLICATION_XML => "application/*+xml",
+        :EDGE_GATEWAY_SERVICE_CONFIGURATION =>
+          "application/vnd.vmware.admin.edgeGatewayServiceConfiguration+xml"
     }
 
     ADMIN_MEDIA_TYPE = {
@@ -266,6 +282,7 @@ module VCloudSdk
       :CLONEVAPPTEMPLATEPARAMS => "CloneVAppTemplateParams",
       :COMPOSEVAPPPARAMS => "ComposeVAppParams",
       :CONTROLACCESSPARAMS => "ControlAccessParams",
+      :STORAGE_PROFILE => "StorageProfile",
       :CUSTOMIZATIONSECTION => "CustomizationSection",
       :DATASTOREPROVIDERVDCRELATIONRECORD =>
         "DatastoreProviderVdcRelationRecord",
@@ -333,6 +350,7 @@ module VCloudSdk
       :ORGREFERENCES => "OrgReferences",
       :ORGSETTINGS => "OrgSettings",
       :ORGVAPPTEMPLATELEASESETTINGS => "OrgVAppTemplateLeaseSettings",
+      :ORGVDCNETWORKRECORD => "OrgVdcNetworkRecord",
       :ORGVDCRECORD => "OrgVdcRecord",
       :ORGVDCREFERENCE => "OrgVdcReference",
       :ORGVDCREFERENCES => "OrgVdcReferences",
@@ -380,6 +398,7 @@ module VCloudSdk
       :USERRECORD => "UserRecord",
       :USERREFERENCE => "UserReference",
       :USERREFERENCES => "UserReferences",
+      :USESFASTPROVISIONING => "UsesFastProvisioning",
       :VAPP => "VApp",
       :VAPPLEASESETTINGS => "VAppLeaseSettings",
       :VAPPNETWORK => "VAppNetwork",

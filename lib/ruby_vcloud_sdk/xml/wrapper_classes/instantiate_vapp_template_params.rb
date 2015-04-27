@@ -35,6 +35,52 @@ module VCloudSdk
         source_node["id"] = src["id"]
       end
 
+      def set_source_item=(sourced_item)
+        return unless sourced_item
+
+        raise "vApp sourced item already set." if @sourced_item_exists
+        @sourced_item_exists = true
+
+        sourced_item.each do |vm, values|
+          node_sourced_item = add_child('SourcedItem')
+          node_source = add_child('Source', namespace.prefix, namespace.href, node_sourced_item)
+          node_source['href'] = vm.href
+          node_vm_general_params = add_child('VmGeneralParams', namespace.prefix, namespace.href, node_sourced_item)
+          node_vm_name = add_child('Name', namespace.prefix, namespace.href, node_vm_general_params)
+          node_vm_name.content = values['name']
+          instantiation_params = add_child('InstantiationParams', namespace.prefix, namespace.href, node_sourced_item)
+          vm.hardware_section.hardware.each do |item|
+            item.node.remove unless item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '17' ||
+                item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '3' ||
+                item.get_rasd_content(RASD_TYPES[:RESOURCE_TYPE]) == '4'
+            parent = item.get_rasd(RASD_TYPES[:PARENT])
+            parent.node.remove if parent
+          end
+          values['hard_disks'].each do |disk, disk_params|
+            if disk_params['storage_policy']
+              disk.host_resource['vcloud:storageProfileHref'] = disk_params['storage_policy']
+              disk.host_resource['vcloud:storageProfileOverrideVmDefault'] = 'true'
+            end
+            disk.host_resource['vcloud:capacity'] = disk_params['disk_space']
+          end
+          vm.change_cpu_count(values['vcpu_per_vm'])
+          vm.change_cores_per_socket(values['core_per_socket'])
+          vm.change_memory(values['memory'])
+          instantiation_params.add_child(vm.hardware_section.node.clone)
+          if values['storage_policy']
+            storage_profile = values['storage_policy']
+            node_st = create_child('StorageProfile',
+              namespace.prefix,
+              namespace.href)
+            node_st['type'] = storage_profile.type
+            node_st['name'] = storage_profile.name
+            node_st['href'] = storage_profile.href
+            instantiation_params.after(node_st)
+          end
+          node_sourced_item.after(all_eulas_accepted.node)
+        end
+      end
+
       def set_locality=(locality)
         return unless locality
 
@@ -42,6 +88,9 @@ module VCloudSdk
         @local_exists = true
 
         locality.each do |k,v|
+          disk = v[0]
+          storage_profile = v[1]
+
           node_sp = create_child("SourcedVmInstantiationParams",
                                  namespace.prefix,
                                  namespace.href)
@@ -55,18 +104,30 @@ module VCloudSdk
           node_sv["name"] = k.name
           node_sv["href"] = k.href
 
-          node_lp = create_child("LocalityParams",
-                                 namespace.prefix,
-                                 namespace.href)
-          node_sv.after(node_lp)
+          if storage_profile
+            node_st = create_child("StorageProfile",
+                                   namespace.prefix,
+                                   namespace.href)
+            node_st["type"] = storage_profile.type
+            node_st["name"] = storage_profile.name
+            node_st["href"] = storage_profile.href
+            node_sv.after(node_st)
+          end
 
-          node_re = add_child("ResourceEntity",
-                              namespace.prefix,
-                              namespace.href,
-                              node_lp)
-          node_re["type"] = v.type
-          node_re["name"] = v.name
-          node_re["href"] = v.href
+          if disk
+            node_lp = create_child("LocalityParams",
+                                   namespace.prefix,
+                                   namespace.href)
+            node_st ? node_st.after(node_lp) : node_sv.after(node_lp)
+
+            node_re = add_child("ResourceEntity",
+                                namespace.prefix,
+                                namespace.href,
+                                node_lp)
+            node_re["type"] = disk.type
+            node_re["name"] = disk.name
+            node_re["href"] = disk.href
+          end
         end
       end
 
@@ -109,6 +170,10 @@ module VCloudSdk
 
       def is_source_delete
         get_nodes("IsSourceDelete").first
+      end
+
+      def all_eulas_accepted
+        get_nodes("AllEULAsAccepted").first
       end
     end
 

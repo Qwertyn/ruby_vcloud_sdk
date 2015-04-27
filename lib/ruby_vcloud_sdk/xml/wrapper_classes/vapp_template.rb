@@ -11,6 +11,10 @@ module VCloudSdk
         files.find_all {|f| f["size"].to_i < 0 ||
           (f["size"].to_i > f["bytesTransferred"].to_i)}
       end
+
+      def catalog_item_link
+        get_nodes("Link", {"rel" => "catalogItem"}, true).first
+      end
     end
 
   end

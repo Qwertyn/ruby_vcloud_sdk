@@ -13,6 +13,11 @@ module VCloudSdk
                   .first
       end
 
+      def storage_profile
+        get_nodes(XML_TYPE[:STORAGE_PROFILE],
+                  { type: MEDIA_TYPE[:VDC_STORAGE_PROFILE] }).first
+      end
+
       def product_sections_link
         get_nodes(XML_TYPE[:LINK],
                   { type: MEDIA_TYPE[:PRODUCT_SECTIONS] },
@@ -31,6 +36,18 @@ module VCloudSdk
         get_nodes(XML_TYPE[:LINK],
                   { rel: "disk:detach",
                     type: MEDIA_TYPE[:DISK_ATTACH_DETACH_PARAMS] },
+                  true).first
+      end
+
+      def acquire_ticket_link
+        get_nodes(XML_TYPE[:LINK],
+                  { rel: "screen:acquireTicket" },
+                  true).first
+      end
+
+      def acquire_mks_ticket_link
+        get_nodes(XML_TYPE[:LINK],
+                  { rel: "screen:acquireMksTicket" },
                   true).first
       end
 
@@ -88,13 +105,22 @@ module VCloudSdk
                   type: MEDIA_TYPE[:NETWORK_CONNECTION_SECTION]).first
       end
 
+      def guest_customization_section
+        get_nodes("GuestCustomizationSection",
+                  type: MEDIA_TYPE[:GUEST_CUSTOMIZATION_SECTION]).first
+      end
+
       def product_section
         get_nodes("ProductSection", nil, true, OVF).first
       end
 
+      def snapshot_section
+        get_nodes("SnapshotSection", type: MEDIA_TYPE[:SNAPSHOT_SECTION]).first
+      end
+
       # hardware modification methods
 
-      def add_hard_disk(capacity, bus_type, bus_sub_type)
+      def add_hard_disk(capacity, bus_type, bus_sub_type, sp_href)
         section = hardware_section
         # Create a RASD item
         new_disk = WrapperFactory
@@ -115,6 +141,10 @@ module VCloudSdk
           "busSubType", VCLOUD_NAMESPACE)] = bus_sub_type
         host_resource[new_disk.create_qualified_name(
           "busType", VCLOUD_NAMESPACE)] = bus_type
+        host_resource[new_disk.create_qualified_name(
+            "storageProfileOverrideVmDefault", VCLOUD_NAMESPACE)] = true
+        host_resource[new_disk.create_qualified_name(
+            "storageProfileHref", VCLOUD_NAMESPACE)] = sp_href
       end
 
       def delete_hard_disk?(disk_name)
@@ -128,10 +158,40 @@ module VCloudSdk
         false
       end
 
+      def change_disk_size(disk_name, mb)
+        @logger.debug("Updating disk size on vm #{name} to #{mb} MB")
+        hardware_section.hard_disks.each do |disk|
+          if disk.element_name == disk_name
+            if disk.host_resource['vcloud:capacity'].to_i > mb
+              fail(CloudError,
+                'Virtual machine disk sizes may only be increased, not decreased.')
+            end
+
+            disk.host_resource['vcloud:capacity'] = mb
+          end
+        end
+      end
+
+      def change_storage_profile(disk_name, sp_href)
+        hardware_section.hard_disks.each do |disk|
+          if disk.element_name == disk_name
+            disk.host_resource[disk.create_qualified_name(
+                "storageProfileOverrideVmDefault", VCLOUD_NAMESPACE)] = true
+            disk.host_resource['vcloud:storageProfileHref'] = sp_href
+          end
+        end
+      end
+
       def change_cpu_count(quantity)
         @logger.debug("Updating CPU count on vm #{name} to #{quantity} ")
         item = hardware_section.cpu
         item.set_rasd("VirtualQuantity", quantity)
+      end
+
+      def change_cores_per_socket(quantity)
+        @logger.debug("Updating cores count per socket on vm #{name} to #{quantity} ")
+        item = hardware_section.cpu
+        item.set_vmw("CoresPerSocket", quantity)
       end
 
       def change_memory(mb)

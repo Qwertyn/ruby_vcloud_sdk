@@ -7,6 +7,9 @@ module VCloudSdk
   class VApp
     include Infrastructure
     include Powerable
+    extend Forwardable
+
+    def_delegators :entity_xml, :to_hash, :storage_lease_expiration
 
     def initialize(session, link)
       @session = session
@@ -21,7 +24,7 @@ module VCloudSdk
       vapp = entity_xml
       vapp_name = name
 
-      if is_status?(vapp, :POWERED_ON)
+      if is_status?(vapp, :POWERED_ON) || is_status?(vapp, :MIXED)
         fail CloudError,
              "vApp #{vapp_name} is powered on, power-off before deleting."
       end
@@ -29,7 +32,7 @@ module VCloudSdk
       wait_for_running_tasks(vapp, "VApp #{vapp_name}")
 
       Config.logger.info "Deleting vApp #{vapp_name}."
-      monitor_task(connection.delete(vapp.remove_link.href),
+      monitor_task(connection.delete(vapp.href),
                    @session.time_limit[:delete_vapp]) do |task|
         Config.logger.info "vApp #{vapp_name} deleted."
         return
@@ -93,6 +96,12 @@ module VCloudSdk
       self
     end
 
+    def networks
+      entity_xml.networks.map do |network_link|
+        VCloudSdk::Network.new(@session, network_link)
+      end
+    end
+
     def list_networks
       entity_xml
         .network_config_section
@@ -143,6 +152,36 @@ module VCloudSdk
                             Xml::MEDIA_TYPE[:NETWORK_CONFIG_SECTION])
       monitor_task(task)
       self
+    end
+
+    def change_name_or_description(name: nil, description: nil)
+      fail CloudError,
+        'Please set correct name or description for vApp' if name.nil? && description.nil?
+
+      payload = entity_xml
+      payload.name = name if name
+      payload.description = description if description
+
+      task = connection.put(payload.href,
+                            payload,
+                            Xml::MEDIA_TYPE[:VAPP])
+      monitor_task(task)
+      self
+    end
+
+    def vdc
+      VCloudSdk::VDC.new(@session, entity_xml.vdc_link)
+    end
+
+    def find_network_by_name(network_name)
+      network_link = entity_xml.
+        network_config_section.
+        network_configs.
+        select { |vapp_network| vapp_network.network_name == network_name }.
+        first.try(:link)
+
+      return unless network_link
+      VCloudSdk::Network.new(@session, network_link)
     end
 
     private

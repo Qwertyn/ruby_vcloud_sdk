@@ -3,6 +3,7 @@ require_relative "infrastructure"
 require_relative "powerable"
 require_relative "internal_disk"
 require_relative "nic"
+require_relative "snapshot"
 
 module VCloudSdk
   class VM
@@ -11,14 +12,36 @@ module VCloudSdk
 
     extend Forwardable
     def_delegator :entity_xml, :name
+    def_delegator :entity_xml, :href_id
+    def_delegator :entity_xml, :network_connection_section
+    def_delegator :entity_xml, :guest_customization_section
 
     def initialize(session, link)
       @session = session
       @link = link
     end
 
+    def to_hash
+      if (index = network_connection_section.primary_network_connection_index)
+        ip_address = network_connection_section.network_connection(index).ip_address
+      end
+
+      { href_id: href_id,
+        name: name,
+        status: status,
+        memory: memory,
+        vcpu: vcpu,
+        cores_per_socket: cores_per_socket,
+        primary_network_connection_ip_address: ip_address,
+        computer_name: guest_customization_section.computer_name }
+    end
+
     def href
       @link
+    end
+
+    def storage_profile
+      VCloudSdk::VdcStorageProfile.new(entity_xml.storage_profile)
     end
 
     # returns size of memory in megabytes
@@ -63,7 +86,7 @@ module VCloudSdk
               .get_rasd_content(Xml::RASD_TYPES[:VIRTUAL_QUANTITY])
 
       fail CloudError,
-           "Uable to retrieve number of virtual cpus of VM #{name}" if cpus.nil?
+           "Unable to retrieve number of virtual cpus of VM #{name}" if cpus.nil?
       cpus.to_i
     end
 
@@ -86,6 +109,50 @@ module VCloudSdk
       self
     end
 
+    def cores_per_socket
+      cps = entity_xml
+                .hardware_section
+                .cpu
+                .get_vmw(Xml::VMW_TYPES[:CORES_PER_SOCKET]).content
+
+      fail CloudError,
+        "Unable to retrieve cores per socket of VM #{name}" if cps.nil?
+      cps.to_i
+    end
+
+    def cores_per_socket=(cps)
+      fail(CloudError,
+        "Invalid virtual CPU count #{cps}") if cps <= 0
+
+      Config
+        .logger
+        .info "Changing the virtual cores per socket to #{cps}."
+
+      payload = entity_xml
+      payload.change_cores_per_socket(cps)
+
+      task = connection.post(payload.reconfigure_link.href,
+        payload,
+        Xml::MEDIA_TYPE[:VM])
+      monitor_task(task)
+      self
+    end
+
+    def change_name_or_description(name: nil, description: nil)
+      fail CloudError,
+           'Please set correct name or description for VM' if name.nil? && description.nil?
+
+      payload = entity_xml
+      payload.name = name if name
+      payload.description = description if description
+
+      task = connection.put(payload.href,
+                            payload,
+                            Xml::MEDIA_TYPE[:VM])
+      monitor_task(task)
+      self
+    end
+
     def list_networks
       entity_xml
         .network_connection_section
@@ -94,16 +161,10 @@ module VCloudSdk
     end
 
     def nics
-      primary_index = entity_xml
-                        .network_connection_section
-                        .primary_network_connection_index
       entity_xml
-        .network_connection_section
-        .network_connections
-        .map do |network_connection|
-          VCloudSdk::NIC.new(network_connection,
-                             network_connection.network_connection_index == primary_index)
-        end
+        .hardware_section
+        .nics
+        .map { |nic| VCloudSdk::NIC.new(nic, nic.is_primary, self) }
     end
 
     def independent_disks
@@ -161,6 +222,23 @@ module VCloudSdk
 
       Config.logger.info "Disk '#{disk.name}' is detached from VM '#{name}'"
       self
+    end
+
+    def acquire_ticket
+      link = entity_xml.acquire_ticket_link
+
+      return unless link
+
+      ticket = connection.post(link, nil)
+      URI.unescape(ticket.content)
+    end
+
+    def acquire_mks_ticket
+      link = entity_xml.acquire_mks_ticket_link
+
+      return unless link
+
+      connection.post(link, nil)
     end
 
     def insert_media(catalog_name, media_file_name)
@@ -249,12 +327,15 @@ module VCloudSdk
       self
     end
 
-    def delete_nics(*nics)
+    def delete_nic_by_name(name)
+      nic = nics.detect { |nic| nic.element_name == name }
+      fail ObjectNotFoundError, "NIC '#{name}' is not found" unless nic
+
       payload = entity_xml
       fail CloudError,
            "VM #{name} is powered-on and cannot delete NIC." if is_status?(payload, :POWERED_ON)
 
-      payload.delete_nics(*nics)
+      payload.delete_nics(nic)
       task = connection.post(payload.reconfigure_link.href,
                              payload,
                              Xml::MEDIA_TYPE[:VM])
@@ -293,6 +374,7 @@ module VCloudSdk
 
     def create_internal_disk(
           capacity,
+          sp_href = self.storage_profile.href,
           bus_type = "scsi",
           bus_sub_type = "lsilogic")
 
@@ -307,12 +389,14 @@ module VCloudSdk
       fail(CloudError,
            "Invalid bus sub type!") unless bus_sub_type
 
+      fail(CloudError,
+        "Invalid storage profile id!") unless sp_href
       Config
         .logger
         .info "Creating internal disk #{name} of #{capacity}MB."
 
       payload = entity_xml
-      payload.add_hard_disk(capacity, bus_type, bus_sub_type)
+      payload.add_hard_disk(capacity, bus_type, bus_sub_type, sp_href)
 
       task = connection.post(payload.reconfigure_link.href,
                              payload,
@@ -335,6 +419,76 @@ module VCloudSdk
       self
     end
 
+    def update_internal_disk_by_name(name: '', capacity: nil, sp_href: nil)
+      payload = entity_xml
+      payload.change_storage_profile(name, sp_href) if sp_href
+
+      if capacity
+        fail(CloudError,
+          "Invalid size in MB #{capacity}") if capacity <= 0
+
+        Config
+          .logger
+          .info "Creating internal disk #{name} of #{capacity}MB."
+
+        payload.change_disk_size(name, capacity)
+      end
+
+      task = connection.post(
+        payload.reconfigure_link.href,
+        payload,
+        Xml::MEDIA_TYPE[:VM]
+      )
+      monitor_task(task)
+      self
+    end
+
+    def vapp
+      vapp = connection.get("/api/vApp/#{entity_xml.vapp_link.href_id}")
+      VCloudSdk::VApp.new(@session, vapp)
+    end
+
+    def snapshot
+      snapshot_section = entity_xml.snapshot_section
+      snapshot = snapshot_section.get_nodes("Snapshot").first
+      VCloudSdk::Snapshot.new(snapshot) if snapshot
+    end
+
+    def create_snapshot(name: '', memory: true, quiesce: true)
+      Config.logger.info "Creating snapshot #{name}"
+
+      snapshot = Xml::WrapperFactory.
+          create_instance("CreateSnapshotParams").
+          tap do |params|
+            params.name = name
+            params.memory = memory
+            params.quiesce = quiesce
+          end
+
+      task = connection.post("#{entity_xml.href}/action/createSnapshot",
+                             snapshot,
+                             Xml::MEDIA_TYPE[:SNAPSHOT_CREATE_PARAMS])
+      monitor_task(task)
+      self
+    end
+
+    def remove_snapshots
+      Config.logger.info "Removing all snapshots"
+
+      task = connection.post("#{entity_xml.href}/action/removeAllSnapshots", "")
+      monitor_task(task)
+      self
+    end
+
+    def revert_to_current_snapshot
+      Config.logger.info "Reverting to snapshot"
+
+      task = connection.post("#{entity_xml.href}/action/revertToCurrentSnapshot", "")
+      monitor_task(task)
+      self
+
+    end
+
     private
 
     def add_nic_index
@@ -353,11 +507,6 @@ module VCloudSdk
         .tap do |params|
         params.disk_href = disk.href
       end
-    end
-
-    def vapp
-      vapp_link = entity_xml.vapp_link
-      VCloudSdk::VApp.new(@session, vapp_link.href)
     end
 
     def media_insert_or_eject_params(media)

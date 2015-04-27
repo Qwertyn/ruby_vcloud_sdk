@@ -8,6 +8,79 @@ module VCloudSdk
 
     private
 
+    def organizations
+      @session.vcloud.organizations.map do |org_link|
+        VCloudSdk::Organization.new(@session, org_link)
+      end
+    end
+
+    def vapps
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.map do |vapp_link|
+        VCloudSdk::VApp.new(@session, vapp_link)
+      end
+    end
+
+    def networks
+      networks_link = @session.query_list.networks_query_list
+      query_list = VCloudSdk::QueryList.new(@session, networks_link)
+
+      query_list.networks.map do |network_link|
+        VCloudSdk::Network.new(@session, network_link)
+      end
+    end
+
+    def roles
+      roles_link = @session.query_list.roles_query_list
+      query_list = VCloudSdk::QueryList.new(@session, roles_link)
+
+      query_list.roles.map do |role_link|
+        VCloudSdk::Role.new(@session, role_link)
+      end
+    end
+
+    # TODO: get it work for admin accounts
+    def list_vapps
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.map do |vapp_link|
+        VCloudSdk::VApp.new(@session, vapp_link).to_hash
+      end
+    end
+
+    def find_vapp_by_name(name)
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      vapp_link = query_list.vapp_link(name)
+      fail ObjectNotFoundError, "Vapp #{name} not found" unless vapp_link
+      VCloudSdk::VApp.new(@session, vapp_link)
+    end
+
+    def vapp_exists?(name)
+      vapps_link = @session.query_list.vapps_query_list
+      query_list = VCloudSdk::QueryList.new(@session, vapps_link)
+
+      query_list.vapps.any? do |vapp|
+        vapp.name == name
+      end
+    end
+
+    def vdcs
+      @session.org.vdcs.map do |vdc_link|
+        VCloudSdk::VDC.new(@session, vdc_link)
+      end
+    end
+
+    def list_vdcs
+      @session.org.vdcs.map do |vdc_link|
+        vdc_link.name
+      end
+    end
+
     def find_vdc_by_name(name)
       vdc_link = @session.org.vdc_link(name)
       fail ObjectNotFoundError, "VDC #{name} not found" unless vdc_link

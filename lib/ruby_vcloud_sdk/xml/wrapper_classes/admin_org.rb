@@ -9,7 +9,18 @@ module VCloudSdk
       def catalog(name)
         get_nodes("CatalogReference", {"name"=>name}).first
       end
-    end
 
+      def users
+        get_nodes("UserReference")
+      end
+
+      def vdcs
+        get_nodes("Vdc")
+      end
+
+      def catalogs
+        get_nodes("CatalogReference")
+      end
+    end
   end
 end

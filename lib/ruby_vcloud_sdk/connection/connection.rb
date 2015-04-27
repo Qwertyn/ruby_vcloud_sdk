@@ -25,6 +25,7 @@ module VCloudSdk
         request_timeout = 60 unless request_timeout
         @site = site || rest_client::Resource.new(
                           url,
+                          params: { pageSize: 125 },
                           timeout: request_timeout)
         @file_uploader = file_uploader || FileUploader
       end
@@ -161,12 +162,18 @@ module VCloudSdk
       def construct_rest_logger
         Config.logger.debug("constructing rest_logger")
 
-        config_logger_dev = Config.logger.instance_eval { @logdev }.dev
+        if Config.logger.class == ActiveSupport::TaggedLogging
+          logger = Config.logger.instance_variable_get(:@logger)
+        else
+          logger = Config.logger
+        end
+
+        config_logger_dev = logger.instance_eval { @logdev }.dev
         if config_logger_dev.respond_to?(:path)
           rest_log_filename = File.join(
             File.dirname(config_logger_dev.path),
-            "rest")
-          log_file = File.open(rest_log_filename, "w")
+            "vcloud_rest.log")
+          log_file = File.open(rest_log_filename, "a")
           log_file.sync = true
           @rest_logger = Logger.new(log_file)
           @rest_logger.level = Config.logger.level

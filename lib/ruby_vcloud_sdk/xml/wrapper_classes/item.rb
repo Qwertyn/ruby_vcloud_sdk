@@ -21,6 +21,16 @@ module VCloudSdk
         fail "The RASD element #{name} does not exist." unless node
         node.content = value
       end
+
+      def get_vmw(name)
+        get_nodes(name, nil, true, VMW).first
+      end
+
+      def set_vmw(name, value)
+        node = get_vmw(name)
+        fail "The VMW element #{name} does not exist." unless node
+        node.content = value
+      end
     end
   end
 end
