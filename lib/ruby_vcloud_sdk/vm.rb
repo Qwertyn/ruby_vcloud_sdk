@@ -360,6 +360,10 @@ module VCloudSdk
       self
     end
 
+    def volume_internal_disks
+      entity_xml.hardware_section.hard_disks.inject(0) { |sum, disk| sum += disk.host_resource.attribute("capacity").to_s.to_i }
+    end
+
     def internal_disks
       hardware_section = entity_xml.hardware_section
       internal_disks = []
