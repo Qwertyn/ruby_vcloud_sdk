@@ -13,7 +13,7 @@ module VCloudSdk
   class Client
     include Infrastructure
 
-    VCLOUD_VERSION_NUMBER = "5.6"
+    VCLOUD_VERSION_NUMBER = '5.1' # '5.6' TODO transfer when initializing the client
 
     public :vdcs, :list_vdcs, :find_vdc_by_name, :catalogs,
            :list_catalogs, :catalog_exists?, :find_catalog_by_name,
@@ -105,6 +105,11 @@ module VCloudSdk
     def vapp(id)
       vapp = connection.get("/api/vApp/#{id}")
       VCloudSdk::VApp.new(@session, vapp)
+    end
+
+    def find_vapps_by_vdc_name(vdc_name)
+      vapps = connection.get("/api/admin/extension/vapps/query?format=records&filter=vdcName==#{vdc_name}").vapps
+      vapps.map { |vapp| VCloudSdk::VApp.new(@session, vapp) }
     end
 
     def catalog(id)
